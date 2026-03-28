@@ -131,9 +131,9 @@ export default function OrderTrackingScreen() {
       <View style={[styles.bottomBar, { backgroundColor: colors.background, paddingBottom: insets.bottom + 12, borderTopColor: colors.border }]}>
         <Pressable
           onPress={() => { setMarked(true); router.back(); }}
-          style={[styles.doneBtn, { borderColor: marked ? TEAL : colors.border, backgroundColor: marked ? TEAL : 'transparent' }]}
+          style={[styles.doneBtn, { borderColor: TEAL, backgroundColor: 'transparent' }]}
         >
-          <Text style={[styles.doneBtnText, { color: marked ? '#fff' : colors.text }]}>
+          <Text style={[styles.doneBtnText, { color: TEAL }]}>
             {marked ? 'Marked as Received ✓' : 'Mark as Received'}
           </Text>
         </Pressable>
@@ -144,8 +144,6 @@ export default function OrderTrackingScreen() {
         <Pressable onPress={() => router.back()} style={[styles.backBtn, { backgroundColor: colors.card }]}>
           <BackIcon color={colors.text} />
         </Pressable>
-        <Text style={[styles.title, { color: colors.text }]}>Order Tracking</Text>
-        <View style={{ width: 40 }} />
       </View>
     </View>
   );

@@ -235,7 +235,6 @@ export default function ProductDetailScreen() {
         <Pressable onPress={() => router.back()} style={[styles.headerBtn, { backgroundColor: colors.card }]}>
           <BackIcon color={colors.text} />
         </Pressable>
-        <Text style={[styles.headerTitle, { color: colors.text }]}>Detail Product</Text>
         <Pressable
           onPress={() => product && toggleWishlist({ id: product._id, name: product.name, price: product.price, rating: product.rating, image: { uri: product.image } })}
           style={[styles.headerBtn, { backgroundColor: colors.card }]}
@@ -264,9 +263,9 @@ export default function ProductDetailScreen() {
             <View style={styles.qtyRow}>
               <Pressable
                 onPress={() => setQuantity(Math.max(1, quantity - 1))}
-                style={[styles.qtyBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+                style={[styles.qtyBtn, { backgroundColor: '#1A1A1A' }]}
               >
-                <Text style={[styles.qtySymbol, { color: colors.text }]}>−</Text>
+                <Text style={[styles.qtySymbol, { color: '#fff' }]}>−</Text>
               </Pressable>
               <Text style={[styles.qtyNum, { color: colors.text }]}>{quantity}</Text>
               <Pressable
@@ -442,7 +441,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
   },
   qtySymbol: {
     fontSize: 18,

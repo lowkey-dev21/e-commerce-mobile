@@ -85,9 +85,9 @@ export function DealProductCard({ product, onPress, onWishlist, onAddToCart }: D
           <View style={styles.qtyRow}>
             <Pressable
               onPress={() => updateQuantity(product.id, qty - 1)}
-              style={styles.qtyBtn}
+              style={[styles.qtyBtn, { backgroundColor: colors.text }]}
             >
-              <Text style={styles.qtyBtnText}>−</Text>
+              <Text style={[styles.qtyBtnText, { color: colors.background }]}>−</Text>
             </Pressable>
             <Text style={[styles.qtyNum, { color: colors.text }]}>{qty}</Text>
             <Pressable
@@ -119,9 +119,20 @@ const styles = StyleSheet.create({
   },
   heart: {
     position: 'absolute',
-    top: 10,
-    left: 10,
+    top: 8,
+    left: 8,
     zIndex: 2,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
   },
   badge: {
     position: 'absolute',
@@ -194,7 +205,6 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 12,
-    backgroundColor: '#1A1A1A',
     alignItems: 'center',
     justifyContent: 'center',
   },

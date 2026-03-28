@@ -50,8 +50,56 @@ export default function RootLayout() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
+          name="drop-review/[id]"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="notifications"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="settings"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="edit-profile"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="change-password"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="address"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="add-card"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="notification-settings"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="security"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="language"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="help-support"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="legal"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
           name="checkout"
-          options={{ title: 'Checkout', headerBackTitle: 'Cart' }}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="confirmation"

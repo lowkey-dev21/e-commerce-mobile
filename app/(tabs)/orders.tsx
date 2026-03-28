@@ -109,7 +109,7 @@ function OrderCard({ order, onTrack }: { order: MockOrder; onTrack: () => void }
         </Pressable>
         <Pressable onPress={onTrack} style={styles.trackBtn}>
           <Text style={styles.trackBtnText}>
-            {isCompleted ? 'Received Order' : 'Tracking'}
+            {isCompleted ? 'Drop Review' : 'Tracking'}
           </Text>
         </Pressable>
       </View>
@@ -156,7 +156,7 @@ export default function OrdersScreen() {
         renderItem={({ item }) => (
           <OrderCard
             order={item}
-            onTrack={() => router.push(`/order-tracking/${item.id}`)}
+            onTrack={() => item.status === 'Completed' ? router.push(`/drop-review/${item.id}`) : router.push(`/order-tracking/${item.id}`)}
           />
         )}
       />

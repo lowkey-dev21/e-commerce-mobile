@@ -1,5 +1,6 @@
 import { View, Text, Pressable, StyleSheet, Image } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import Svg, { Path, Line } from 'react-native-svg';
 import { BellIcon } from '../icons/BellIcon';
 import { SunIcon } from '../icons/SunIcon';
@@ -37,6 +38,7 @@ export function HomeHeader({
   onBellPress,
 }: HomeHeaderProps) {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   const { isDark, toggleTheme } = useThemeStore();
   const colors = useTheme();
 
@@ -65,7 +67,7 @@ export function HomeHeader({
         <Pressable onPress={toggleTheme} style={styles.iconBtn}>
           {isDark ? <SunIcon size={22} color={TEAL} /> : <MoonIcon size={22} color={colors.text} />}
         </Pressable>
-        <Pressable onPress={onBellPress} style={styles.iconBtn}>
+        <Pressable onPress={() => router.push('/notifications')} style={styles.iconBtn}>
           <BellIcon size={22} color={colors.text} />
         </Pressable>
       </View>

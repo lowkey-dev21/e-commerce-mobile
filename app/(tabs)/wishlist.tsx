@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Svg, { Path } from 'react-native-svg';
+import Svg, { Path, Circle } from 'react-native-svg';
 import { useWishlistStore, WishlistItem } from '../../store/wishlistStore';
 import { useTheme } from '../../hooks/useTheme';
 import { SearchInput } from '../../components/SearchInput';
@@ -140,14 +140,36 @@ export default function WishlistScreen() {
 
       {items.length === 0 ? (
         <View style={styles.empty}>
-          <Text style={styles.emptyIcon}>🤍</Text>
+          <View style={[styles.emptyRingOuter, { backgroundColor: TEAL + '12' }]}>
+            <View style={[styles.emptyRingInner, { backgroundColor: TEAL + '22' }]}>
+              <View style={[styles.emptyIconCircle, { backgroundColor: TEAL }]}>
+                <Svg width={40} height={40} viewBox="0 0 24 24" fill="none">
+                  <Path d="M12 21C12 21 4 15.5 4 9.5C4 7.01 5.91 5 8.5 5C10.24 5 11.91 6.01 12 7C12.09 6.01 13.76 5 15.5 5C18.09 5 20 7.01 20 9.5C20 15.5 12 21 12 21Z" stroke="#fff" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
+                </Svg>
+              </View>
+            </View>
+          </View>
           <Text style={[styles.emptyTitle, { color: colors.text }]}>Your wishlist is empty</Text>
           <Text style={[styles.emptyDesc, { color: colors.textSecondary }]}>
-            Tap the heart icon on any product to save it here.
+            Tap the heart icon on any product{'\n'}to save it here.
           </Text>
+          <Pressable onPress={() => router.push('/')} style={[styles.shopBtn, { backgroundColor: TEAL }]}>
+            <Text style={styles.shopBtnText}>Explore Products</Text>
+          </Pressable>
         </View>
       ) : filtered.length === 0 ? (
         <View style={styles.empty}>
+          <View style={[styles.emptyRingOuter, { backgroundColor: TEAL + '12' }]}>
+            <View style={[styles.emptyRingInner, { backgroundColor: TEAL + '22' }]}>
+              <View style={[styles.emptyIconCircle, { backgroundColor: TEAL }]}>
+                <Svg width={38} height={38} viewBox="0 0 24 24" fill="none">
+                  <Circle cx={11} cy={11} r={7} stroke="#fff" strokeWidth={1.8} />
+                  <Path d="M21 21L16.65 16.65" stroke="#fff" strokeWidth={1.8} strokeLinecap="round" />
+                  <Path d="M8 11H14M11 8V14" stroke="#fff" strokeWidth={1.8} strokeLinecap="round" />
+                </Svg>
+              </View>
+            </View>
+          </View>
           <Text style={[styles.emptyTitle, { color: colors.text }]}>No results found</Text>
           <Text style={[styles.emptyDesc, { color: colors.textSecondary }]}>
             Try a different search term.
@@ -243,8 +265,21 @@ const styles = StyleSheet.create({
     elevation: 3,
     zIndex: 2,
   },
-  empty: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12, paddingBottom: 80 },
-  emptyIcon: { fontSize: 52 },
-  emptyTitle: { fontSize: 18, fontFamily: 'DMSans_700Bold' },
-  emptyDesc: { fontSize: 14, fontFamily: 'DMSans_400Regular', textAlign: 'center', lineHeight: 22, paddingHorizontal: 32 },
+  empty: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 16, paddingBottom: 80, paddingHorizontal: 32 },
+  emptyRingOuter: {
+    width: 160, height: 160, borderRadius: 80,
+    alignItems: 'center', justifyContent: 'center', marginBottom: 8,
+  },
+  emptyRingInner: {
+    width: 124, height: 124, borderRadius: 62,
+    alignItems: 'center', justifyContent: 'center',
+  },
+  emptyIconCircle: {
+    width: 90, height: 90, borderRadius: 45,
+    alignItems: 'center', justifyContent: 'center',
+  },
+  emptyTitle: { fontSize: 20, fontFamily: 'DMSans_700Bold', textAlign: 'center' },
+  emptyDesc: { fontSize: 14, fontFamily: 'DMSans_400Regular', textAlign: 'center', lineHeight: 22, color: '#999' },
+  shopBtn: { paddingHorizontal: 40, paddingVertical: 14, borderRadius: 14, marginTop: 4 },
+  shopBtnText: { color: '#fff', fontSize: 15, fontFamily: 'DMSans_700Bold' },
 });
