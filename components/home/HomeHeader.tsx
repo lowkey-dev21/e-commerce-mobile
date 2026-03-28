@@ -3,9 +3,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import Svg, { Path, Line } from 'react-native-svg';
 import { BellIcon } from '../icons/BellIcon';
-import { SunIcon } from '../icons/SunIcon';
-import { MoonIcon } from '../icons/MoonIcon';
-import { useThemeStore } from '../../store/themeStore';
 import { useTheme } from '../../hooks/useTheme';
 
 const ORANGE = '#4AB7B6';
@@ -39,7 +36,6 @@ export function HomeHeader({
 }: HomeHeaderProps) {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { isDark, toggleTheme } = useThemeStore();
   const colors = useTheme();
 
   return (
@@ -63,9 +59,6 @@ export function HomeHeader({
       <View style={styles.right}>
         <Pressable onPress={onSearchPress} style={styles.iconBtn}>
           <SearchIcon color={colors.text} />
-        </Pressable>
-        <Pressable onPress={toggleTheme} style={styles.iconBtn}>
-          {isDark ? <SunIcon size={22} color={TEAL} /> : <MoonIcon size={22} color={colors.text} />}
         </Pressable>
         <Pressable onPress={() => router.push('/notifications')} style={styles.iconBtn}>
           <BellIcon size={22} color={colors.text} />

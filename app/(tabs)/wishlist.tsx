@@ -79,6 +79,7 @@ function WishlistCard({ item }: { item: WishlistItem }) {
 export default function WishlistScreen() {
   const colors = useTheme();
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   const { items } = useWishlistStore();
   const [query, setQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<Filter>('All');
@@ -107,36 +108,38 @@ export default function WishlistScreen() {
         )}
       </View>
 
-      {/* Search bar */}
-      <SearchInput value={query} onChangeText={setQuery} placeholder="Search wishlist..." />
-
-      {/* Filter chips */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.filtersRow}
-        style={{ flexGrow: 0 }}
-      >
-        {FILTERS.map((f) => {
-          const active = activeFilter === f;
-          return (
-            <Pressable
-              key={f}
-              onPress={() => setActiveFilter(f)}
-              style={[
-                styles.chip,
-                active
-                  ? { backgroundColor: TEAL, borderColor: TEAL }
-                  : { backgroundColor: 'transparent', borderColor: colors.border },
-              ]}
-            >
-              <Text style={[styles.chipText, { color: active ? '#fff' : colors.textSecondary }]}>
-                {f}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </ScrollView>
+      {/* Search + filters — only when there are items */}
+      {items.length > 0 && (
+        <>
+          <SearchInput value={query} onChangeText={setQuery} placeholder="Search wishlist..." />
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.filtersRow}
+            style={{ flexGrow: 0 }}
+          >
+            {FILTERS.map((f) => {
+              const active = activeFilter === f;
+              return (
+                <Pressable
+                  key={f}
+                  onPress={() => setActiveFilter(f)}
+                  style={[
+                    styles.chip,
+                    active
+                      ? { backgroundColor: TEAL, borderColor: TEAL }
+                      : { backgroundColor: 'transparent', borderColor: colors.border },
+                  ]}
+                >
+                  <Text style={[styles.chipText, { color: active ? '#fff' : colors.textSecondary }]}>
+                    {f}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+        </>
+      )}
 
       {items.length === 0 ? (
         <View style={styles.empty}>
