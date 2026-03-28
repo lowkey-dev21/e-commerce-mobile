@@ -1,6 +1,7 @@
 import { View, Text, Image, Pressable, StyleSheet, Dimensions } from 'react-native';
-import { useState } from 'react';
 import { useTheme } from '../hooks/useTheme';
+import { useWishlistStore } from '../store/wishlistStore';
+import { useCartStore } from '../store/cartStore';
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = (width - 48) / 2;
@@ -25,16 +26,32 @@ interface DealProductCardProps {
 }
 
 export function DealProductCard({ product, onPress, onWishlist, onAddToCart }: DealProductCardProps) {
-  const [qty, setQty] = useState(0);
-  const [wishlisted, setWishlisted] = useState(product.wishlisted ?? false);
   const colors = useTheme();
+  const { toggle, isWishlisted } = useWishlistStore();
+  const { addItem, updateQuantity, items } = useCartStore();
+  const wishlisted = isWishlisted(product.id);
 
+  const cartItem = items.find((i) => i.product._id === product.id);
+  const qty = cartItem?.quantity ?? 0;
   const inCart = qty > 0;
+
+  const cartProduct = {
+    _id: product.id,
+    name: product.name,
+    price: product.price,
+    image: typeof product.image === 'string' ? product.image : '',
+    category: '',
+    description: '',
+    stock: 99,
+    rating: product.rating ?? 0,
+    reviewCount: 0,
+    createdAt: '',
+  };
 
   return (
     <Pressable onPress={onPress} style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
       {/* Heart */}
-      <Pressable onPress={() => { setWishlisted(!wishlisted); onWishlist?.(product.id); }} style={styles.heart}>
+      <Pressable onPress={() => { toggle({ id: product.id, name: product.name, price: product.price, rating: product.rating, image: product.image, discount: product.discount }); onWishlist?.(product.id); }} style={styles.heart}>
         <Text style={{ fontSize: 16, color: wishlisted ? '#4AB7B6' : '#DDD' }}>♥</Text>
       </Pressable>
 
@@ -67,14 +84,14 @@ export function DealProductCard({ product, onPress, onWishlist, onAddToCart }: D
         {inCart ? (
           <View style={styles.qtyRow}>
             <Pressable
-              onPress={() => setQty(Math.max(0, qty - 1))}
+              onPress={() => updateQuantity(product.id, qty - 1)}
               style={styles.qtyBtn}
             >
               <Text style={styles.qtyBtnText}>−</Text>
             </Pressable>
             <Text style={[styles.qtyNum, { color: colors.text }]}>{qty}</Text>
             <Pressable
-              onPress={() => setQty(qty + 1)}
+              onPress={() => updateQuantity(product.id, qty + 1)}
               style={[styles.qtyBtn, styles.qtyBtnPlus]}
             >
               <Text style={[styles.qtyBtnText, { color: '#fff' }]}>+</Text>
@@ -82,7 +99,7 @@ export function DealProductCard({ product, onPress, onWishlist, onAddToCart }: D
           </View>
         ) : (
           <Pressable
-            onPress={() => { setQty(1); onAddToCart?.(product.id); }}
+            onPress={() => { addItem(cartProduct, 1); onAddToCart?.(product.id); }}
             style={styles.addBtn}
           >
             <Text style={styles.addBtnText}>Add to cart</Text>
@@ -96,7 +113,7 @@ export function DealProductCard({ product, onPress, onWishlist, onAddToCart }: D
 const styles = StyleSheet.create({
   card: {
     width: CARD_WIDTH,
-    borderRadius: 16,
+    borderRadius: 12,
     marginBottom: 16,
     borderWidth: 0.8,
   },
@@ -113,8 +130,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#4AB7B6',
     paddingHorizontal: 6,
     paddingVertical: 4,
-    borderTopRightRadius: 16,
-    borderBottomLeftRadius: 10,
+    borderTopRightRadius: 12,
+    borderBottomLeftRadius: 12,
     zIndex: 2,
     alignItems: 'center',
   },
@@ -128,7 +145,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 120,
     borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
+    borderTopRightRadius: 12,
   },
   info: {
     padding: 10,
@@ -159,7 +176,7 @@ const styles = StyleSheet.create({
   addBtn: {
     borderWidth: 1.5,
     borderColor: ORANGE,
-    borderRadius: 10,
+    borderRadius: 12,
     paddingVertical: 7,
     alignItems: 'center',
   },
@@ -176,7 +193,7 @@ const styles = StyleSheet.create({
   qtyBtn: {
     width: 32,
     height: 32,
-    borderRadius: 10,
+    borderRadius: 12,
     backgroundColor: '#1A1A1A',
     alignItems: 'center',
     justifyContent: 'center',

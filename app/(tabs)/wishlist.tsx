@@ -1,17 +1,250 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState, useMemo } from 'react';
+import {
+  View, Text, FlatList, Image, Pressable, StyleSheet,
+  Dimensions, ScrollView,
+} from 'react-native';
+import { useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Svg, { Path } from 'react-native-svg';
+import { useWishlistStore, WishlistItem } from '../../store/wishlistStore';
 import { useTheme } from '../../hooks/useTheme';
+import { SearchInput } from '../../components/SearchInput';
+
+const TEAL = '#4AB7B6';
+const { width } = Dimensions.get('window');
+const CARD_WIDTH = (width - 52) / 2;
+
+const LOCAL_IMAGES: Record<string, any> = {
+  '1': require('../../assets/chair.png'),
+  '2': require('../../assets/washing-machine.png'),
+  '3': require('../../assets/chair.png'),
+  '4': require('../../assets/washing-machine.png'),
+  '5': require('../../assets/chair.png'),
+  '6': require('../../assets/washing-machine.png'),
+};
+
+const FILTERS = ['All', 'Latest', 'Most Popular', 'Cheapest'] as const;
+type Filter = typeof FILTERS[number];
+
+function HeartFilledIcon() {
+  return (
+    <Svg width={16} height={16} viewBox="0 0 24 24" fill={TEAL}>
+      <Path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke={TEAL} strokeWidth={1.5} />
+    </Svg>
+  );
+}
+
+function WishlistCard({ item }: { item: WishlistItem }) {
+  const router = useRouter();
+  const colors = useTheme();
+  const { remove } = useWishlistStore();
+
+  return (
+    <Pressable
+      onPress={() => router.push(`/product/${item.id}`)}
+      style={[styles.card, { borderColor: colors.border }]}
+    >
+      {item.discount && (
+        <View style={styles.badge}>
+          <Text style={styles.badgeText}>{item.discount} OFF</Text>
+        </View>
+      )}
+
+      <View style={[styles.imageWrap, { backgroundColor: colors.skeleton }]}>
+        <Image
+          source={LOCAL_IMAGES[item.id] ?? item.image}
+          style={styles.image}
+          resizeMode="contain"
+        />
+      </View>
+
+      <View style={styles.info}>
+        <Text style={[styles.name, { color: colors.text }]} numberOfLines={2}>{item.name}</Text>
+        {item.rating && (
+          <View style={styles.ratingRow}>
+            <Text style={{ fontSize: 11, color: '#FBBF24' }}>★</Text>
+            <Text style={[styles.rating, { color: colors.textSecondary }]}>{item.rating}</Text>
+          </View>
+        )}
+        <Text style={[styles.price, { color: colors.text }]}>₹{item.price.toLocaleString()}</Text>
+      </View>
+
+      <Pressable onPress={() => remove(item.id)} style={[styles.heartBtn, { backgroundColor: colors.background }]}>
+        <HeartFilledIcon />
+      </Pressable>
+    </Pressable>
+  );
+}
 
 export default function WishlistScreen() {
   const colors = useTheme();
+  const insets = useSafeAreaInsets();
+  const { items } = useWishlistStore();
+  const [query, setQuery] = useState('');
+  const [activeFilter, setActiveFilter] = useState<Filter>('All');
+
+  const filtered = useMemo(() => {
+    let result = items.filter((i) =>
+      i.name.toLowerCase().includes(query.toLowerCase())
+    );
+    if (activeFilter === 'Latest') {
+      result = [...result].reverse();
+    } else if (activeFilter === 'Most Popular') {
+      result = [...result].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
+    } else if (activeFilter === 'Cheapest') {
+      result = [...result].sort((a, b) => a.price - b.price);
+    }
+    return result;
+  }, [items, query, activeFilter]);
+
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <Text style={[styles.text, { color: colors.text }]}>Wishlist</Text>
+    <View style={[styles.screen, { backgroundColor: colors.background }]}>
+      {/* Header */}
+      <View style={[styles.header, { paddingTop: insets.top + 10, backgroundColor: colors.background }]}>
+        <Text style={[styles.title, { color: colors.text }]}>Wishlist</Text>
+        {items.length > 0 && (
+          <Text style={[styles.count, { color: colors.textSecondary }]}>{items.length} items</Text>
+        )}
+      </View>
+
+      {/* Search bar */}
+      <SearchInput value={query} onChangeText={setQuery} placeholder="Search wishlist..." />
+
+      {/* Filter chips */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.filtersRow}
+        style={{ flexGrow: 0 }}
+      >
+        {FILTERS.map((f) => {
+          const active = activeFilter === f;
+          return (
+            <Pressable
+              key={f}
+              onPress={() => setActiveFilter(f)}
+              style={[
+                styles.chip,
+                active
+                  ? { backgroundColor: TEAL, borderColor: TEAL }
+                  : { backgroundColor: 'transparent', borderColor: colors.border },
+              ]}
+            >
+              <Text style={[styles.chipText, { color: active ? '#fff' : colors.textSecondary }]}>
+                {f}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+
+      {items.length === 0 ? (
+        <View style={styles.empty}>
+          <Text style={styles.emptyIcon}>🤍</Text>
+          <Text style={[styles.emptyTitle, { color: colors.text }]}>Your wishlist is empty</Text>
+          <Text style={[styles.emptyDesc, { color: colors.textSecondary }]}>
+            Tap the heart icon on any product to save it here.
+          </Text>
+        </View>
+      ) : filtered.length === 0 ? (
+        <View style={styles.empty}>
+          <Text style={[styles.emptyTitle, { color: colors.text }]}>No results found</Text>
+          <Text style={[styles.emptyDesc, { color: colors.textSecondary }]}>
+            Try a different search term.
+          </Text>
+        </View>
+      ) : (
+        <FlatList
+          data={filtered}
+          keyExtractor={(item) => item.id}
+          extraData={activeFilter + query}
+          numColumns={2}
+          columnWrapperStyle={styles.row}
+          contentContainerStyle={styles.list}
+          showsVerticalScrollIndicator={false}
+          renderItem={({ item }) => <WishlistCard item={item} />}
+        />
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  text: { fontSize: 18, fontFamily: 'DMSans_500Medium' },
+  screen: { flex: 1 },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingBottom: 14,
+  },
+  title: { fontSize: 22, fontFamily: 'DMSans_700Bold' },
+  count: { fontSize: 14, fontFamily: 'DMSans_400Regular' },
+  filtersRow: {
+    paddingHorizontal: 20,
+    gap: 8,
+    paddingBottom: 12,
+  },
+  chip: {
+    paddingHorizontal: 14,
+    height: 32,
+    borderRadius: 12,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  chipText: {
+    fontSize: 13,
+    fontFamily: 'DMSans_500Medium',
+  },
+  list: { paddingHorizontal: 16, paddingTop: 8, paddingBottom: 16, gap: 0 },
+  row: { justifyContent: 'space-between', marginBottom: 16 },
+  card: {
+    width: CARD_WIDTH,
+    borderRadius: 12,
+    overflow: 'hidden',
+    borderWidth: 0.8,
+  },
+  badge: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    backgroundColor: TEAL,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderTopLeftRadius: 12,
+    borderBottomRightRadius: 12,
+    zIndex: 2,
+  },
+  badgeText: { fontSize: 9, fontFamily: 'DMSans_700Bold', color: '#fff' },
+  imageWrap: {
+    width: '100%',
+    height: CARD_WIDTH,
+  },
+  image: { width: '100%', height: '100%' },
+  info: { padding: 10 },
+  name: { fontSize: 13, fontFamily: 'DMSans_500Medium', lineHeight: 18, marginBottom: 4 },
+  ratingRow: { flexDirection: 'row', alignItems: 'center', gap: 3, marginBottom: 4 },
+  rating: { fontSize: 11, fontFamily: 'DMSans_400Regular' },
+  price: { fontSize: 14, fontFamily: 'DMSans_700Bold' },
+  heartBtn: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    zIndex: 2,
+  },
+  empty: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12, paddingBottom: 80 },
+  emptyIcon: { fontSize: 52 },
+  emptyTitle: { fontSize: 18, fontFamily: 'DMSans_700Bold' },
+  emptyDesc: { fontSize: 14, fontFamily: 'DMSans_400Regular', textAlign: 'center', lineHeight: 22, paddingHorizontal: 32 },
 });

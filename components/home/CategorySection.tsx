@@ -1,4 +1,5 @@
 import { View, Text, Image, Pressable, StyleSheet, Dimensions } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useTheme } from '../../hooks/useTheme';
 
 const { width } = Dimensions.get('window');
@@ -23,6 +24,7 @@ const CATEGORIES: Category[] = [
 
 function CategoryCard({ item }: { item: Category }) {
   const colors = useTheme();
+  const router = useRouter();
 
   const textSide = (
     <View style={styles.textSide}>
@@ -38,7 +40,7 @@ function CategoryCard({ item }: { item: Category }) {
   );
 
   return (
-    <Pressable style={[styles.card, { backgroundColor: colors.card }]}>
+    <Pressable onPress={() => router.push(`/category/${encodeURIComponent(item.name)}`)} style={[styles.card, { backgroundColor: colors.card }]}>
       {item.imageOnRight ? (
         <>
           {textSide}
@@ -73,7 +75,7 @@ const styles = StyleSheet.create({
   card: {
     width: '100%',
     height: CARD_HEIGHT,
-    borderRadius: 20,
+    borderRadius: 12,
     flexDirection: 'row',
     overflow: 'hidden',
     shadowColor: '#000',

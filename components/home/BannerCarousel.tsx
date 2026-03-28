@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   card: {
     width: CARD_WIDTH,
     height: 150,
-    borderRadius: 20,
+    borderRadius: 12,
     flexDirection: 'row',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
@@ -95,8 +95,8 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     justifyContent: 'center',
-    borderTopLeftRadius: 20,
-    borderBottomLeftRadius: 20,
+    borderTopLeftRadius: 12,
+    borderBottomLeftRadius: 12,
     overflow: 'hidden',
   },
   dotsGrid: {
@@ -119,8 +119,8 @@ const styles = StyleSheet.create({
   image: {
     width: '48%',
     height: '100%',
-    borderTopRightRadius: 20,
-    borderBottomRightRadius: 20,
+    borderTopRightRadius: 12,
+    borderBottomRightRadius: 12,
   },
   dotsRow: {
     flexDirection: 'row',

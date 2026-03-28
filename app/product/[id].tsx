@@ -1,21 +1,127 @@
 import React, { useEffect, useState } from 'react';
 import {
   View, Text, Image, ScrollView, StyleSheet, Pressable,
-  Dimensions, ActivityIndicator,
+  Dimensions, ActivityIndicator, FlatList,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path, Line, Circle } from 'react-native-svg';
 import { useCartStore } from '../../store/cartStore';
+import { useWishlistStore } from '../../store/wishlistStore';
 import { useTheme } from '../../hooks/useTheme';
 import { useThemeStore } from '../../store/themeStore';
 import { productService, Product } from '../../services/api';
 
 const { width, height } = Dimensions.get('window');
 const TEAL = '#4AB7B6';
+const ORANGE = TEAL;
 const IMAGE_HEIGHT = height * 0.48;
 
-const COLORS = ['#A0522D', '#1A1A1A', TEAL, '#4CAF50'];
+// Map of product IDs to their available colors (add entries when a product has color variants)
+const PRODUCT_COLORS: Record<string, string[]> = {
+  // example: '1': ['#A0522D', '#1A1A1A', TEAL, '#4CAF50'],
+};
+
+interface Review {
+  id: string;
+  name: string;
+  initials: string;
+  avatarColor: string;
+  rating: number;
+  date: string;
+  text: string;
+}
+
+const MOCK_REVIEWS: Review[] = [
+  { id: '1', name: 'Sarah M.', initials: 'SM', avatarColor: TEAL, rating: 5, date: '12 Jan 2024', text: 'Absolutely love it! The quality exceeded my expectations. Very sturdy and looks great in my living room.' },
+  { id: '2', name: 'James T.', initials: 'JT', avatarColor: '#6B9BF2', rating: 4, date: '8 Jan 2024', text: 'Great product overall. Delivery was fast and packaging was excellent. Would buy again.' },
+  { id: '3', name: 'Priya K.', initials: 'PK', avatarColor: '#C77DFF', rating: 5, date: '2 Jan 2024', text: 'Perfect! Exactly as described. The material feels premium and it was easy to set up.' },
+  { id: '4', name: 'David R.', initials: 'DR', avatarColor: '#A594F9', rating: 4, date: '28 Dec 2023', text: 'Very satisfied with this purchase. Good value for money. Highly recommend to everyone.' },
+];
+
+function ReviewCard({ review, colors }: { review: Review; colors: any }) {
+  return (
+    <View style={[reviewStyles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <View style={reviewStyles.top}>
+        <View style={[reviewStyles.avatar, { backgroundColor: review.avatarColor }]}>
+          <Text style={reviewStyles.initials}>{review.initials}</Text>
+        </View>
+        <View style={{ flex: 1 }}>
+          <Text style={[reviewStyles.name, { color: colors.text }]}>{review.name}</Text>
+          <Text style={[reviewStyles.date, { color: colors.textSecondary }]}>{review.date}</Text>
+        </View>
+        <View style={reviewStyles.starsRow}>
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Text key={i} style={{ fontSize: 11, color: i < review.rating ? '#FBBF24' : colors.border }}>★</Text>
+          ))}
+        </View>
+      </View>
+      <Text style={[reviewStyles.text, { color: colors.textSecondary }]} numberOfLines={3}>
+        {review.text}
+      </Text>
+    </View>
+  );
+}
+
+const reviewStyles = StyleSheet.create({
+  card: {
+    width: 240,
+    borderRadius: 12,
+    padding: 14,
+    borderWidth: 1,
+    marginRight: 12,
+  },
+  top: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 10,
+  },
+  avatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  initials: {
+    fontSize: 13,
+    fontFamily: 'DMSans_700Bold',
+    color: '#fff',
+  },
+  name: {
+    fontSize: 13,
+    fontFamily: 'DMSans_700Bold',
+  },
+  date: {
+    fontSize: 11,
+    fontFamily: 'DMSans_400Regular',
+    marginTop: 1,
+  },
+  starsRow: {
+    flexDirection: 'row',
+    gap: 1,
+  },
+  text: {
+    fontSize: 12,
+    fontFamily: 'DMSans_400Regular',
+    lineHeight: 18,
+  },
+});
+
+function HeartIcon({ filled, color }: { filled: boolean; color: string }) {
+  return (
+    <Svg width={20} height={20} viewBox="0 0 24 24" fill={filled ? color : 'none'}>
+      <Path
+        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+        stroke={color}
+        strokeWidth={1.8}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
+}
 
 function BackIcon({ color }: { color: string }) {
   return (
@@ -68,6 +174,7 @@ export default function ProductDetailScreen() {
   const { isDark } = useThemeStore();
   const { addItem, items } = useCartStore();
 
+  const { toggle: toggleWishlist, isWishlisted } = useWishlistStore();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
@@ -75,6 +182,8 @@ export default function ProductDetailScreen() {
   const [expanded, setExpanded] = useState(false);
 
   const cartItem = product ? items.find((i) => i.product._id === product._id) : null;
+  const productColors = PRODUCT_COLORS[id!] ?? [];
+  const wishlisted = product ? isWishlisted(product._id) : false;
   const deliveryDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
     .toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
 
@@ -127,8 +236,11 @@ export default function ProductDetailScreen() {
           <BackIcon color={colors.text} />
         </Pressable>
         <Text style={[styles.headerTitle, { color: colors.text }]}>Detail Product</Text>
-        <Pressable style={[styles.headerBtn, { backgroundColor: colors.card }]}>
-          <BagIcon color={colors.text} />
+        <Pressable
+          onPress={() => product && toggleWishlist({ id: product._id, name: product.name, price: product.price, rating: product.rating, image: { uri: product.image } })}
+          style={[styles.headerBtn, { backgroundColor: colors.card }]}
+        >
+          <HeartIcon filled={wishlisted} color={ORANGE} />
         </Pressable>
       </View>
 
@@ -179,27 +291,31 @@ export default function ProductDetailScreen() {
             </Text>
           </View>
 
-          {/* Color picker */}
-          <Text style={[styles.sectionLabel, { color: colors.text }]}>Color</Text>
-          <View style={styles.colorRow}>
-            {COLORS.map((c, i) => (
-              <Pressable
-                key={c}
-                onPress={() => setSelectedColor(i)}
-                style={[
-                  styles.colorCircle,
-                  { backgroundColor: c },
-                  selectedColor === i && styles.colorSelected,
-                ]}
-              >
-                {selectedColor === i && (
-                  <Svg width={12} height={12} viewBox="0 0 24 24" fill="none">
-                    <Path d="M20 6L9 17L4 12" stroke="#fff" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" />
-                  </Svg>
-                )}
-              </Pressable>
-            ))}
-          </View>
+          {/* Color picker — only shown when product has color variants */}
+          {productColors.length > 0 && (
+            <>
+              <Text style={[styles.sectionLabel, { color: colors.text }]}>Color</Text>
+              <View style={styles.colorRow}>
+                {productColors.map((c, i) => (
+                  <Pressable
+                    key={c}
+                    onPress={() => setSelectedColor(i)}
+                    style={[
+                      styles.colorCircle,
+                      { backgroundColor: c },
+                      selectedColor === i && styles.colorSelected,
+                    ]}
+                  >
+                    {selectedColor === i && (
+                      <Svg width={12} height={12} viewBox="0 0 24 24" fill="none">
+                        <Path d="M20 6L9 17L4 12" stroke="#fff" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" />
+                      </Svg>
+                    )}
+                  </Pressable>
+                ))}
+              </View>
+            </>
+          )}
 
           {/* Description */}
           <Text style={[styles.sectionLabel, { color: colors.text }]}>Description</Text>
@@ -211,6 +327,25 @@ export default function ProductDetailScreen() {
               </Text>
             )}
           </Text>
+
+          {/* Reviews */}
+          <View style={styles.reviewsHeader}>
+            <Text style={[styles.sectionLabel, { color: colors.text, marginBottom: 0 }]}>
+              Reviews ({product.reviewCount})
+            </Text>
+            <Pressable onPress={() => router.push(`/reviews/${id}`)}>
+              <Text style={{ color: TEAL, fontSize: 13, fontFamily: 'DMSans_500Medium' }}>See All</Text>
+            </Pressable>
+          </View>
+          <FlatList
+            data={MOCK_REVIEWS}
+            keyExtractor={(item) => item.id}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: 4 }}
+            renderItem={({ item }) => <ReviewCard review={item} colors={colors} />}
+            style={{ marginTop: 12 }}
+          />
 
           <View style={{ height: 120 }} />
         </View>
@@ -374,6 +509,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 22,
     fontFamily: 'DMSans_400Regular',
+  },
+  reviewsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 20,
   },
   bottom: {
     position: 'absolute',

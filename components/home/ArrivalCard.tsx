@@ -1,9 +1,9 @@
 import { View, Text, Image, Pressable, StyleSheet, Dimensions } from 'react-native';
-import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import Svg, { Path } from 'react-native-svg';
 import { Product } from '../../services/api';
 import { useTheme } from '../../hooks/useTheme';
+import { useWishlistStore } from '../../store/wishlistStore';
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = (width - 52) / 2;
@@ -30,7 +30,8 @@ interface ArrivalCardProps {
 export function ArrivalCard({ product }: ArrivalCardProps) {
   const router = useRouter();
   const colors = useTheme();
-  const [wishlisted, setWishlisted] = useState(false);
+  const { toggle, isWishlisted } = useWishlistStore();
+  const wishlisted = isWishlisted(product._id);
 
   return (
     <Pressable
@@ -41,7 +42,7 @@ export function ArrivalCard({ product }: ArrivalCardProps) {
       <View style={[styles.imageWrap, { backgroundColor: colors.skeleton }]}>
         <Image source={{ uri: product.image }} style={styles.image} resizeMode="contain" />
         <Pressable
-          onPress={() => setWishlisted(!wishlisted)}
+          onPress={() => toggle({ id: product._id, name: product.name, price: product.price, rating: product.rating, image: { uri: product.image } })}
           style={[styles.heartBtn, { backgroundColor: colors.background }]}
         >
           <HeartIcon filled={wishlisted} />
@@ -61,14 +62,14 @@ export function ArrivalCard({ product }: ArrivalCardProps) {
 const styles = StyleSheet.create({
   card: {
     width: CARD_WIDTH,
-    borderRadius: 16,
+    borderRadius: 12,
     marginBottom: 16,
     overflow: 'hidden',
   },
   imageWrap: {
     width: '100%',
     height: CARD_WIDTH,
-    borderRadius: 16,
+    borderRadius: 12,
     overflow: 'hidden',
   },
   image: {

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { View, TextInput, StyleSheet, RefObject, Pressable, Text } from 'react-native';
 import Svg, { Path, Circle } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -39,11 +40,12 @@ export function AppHeader({
 }: AppHeaderProps) {
   const insets = useSafeAreaInsets();
   const colors = useTheme();
+  const [focused, setFocused] = useState(false);
 
   if (!withBackground) {
     return (
       <View style={[styles.plainWrapper, { backgroundColor: colors.background, paddingTop: showClose ? insets.top + 10 : 8 }]}>
-        <View style={[styles.searchBar, { backgroundColor: colors.skeleton }]}>
+        <View style={[styles.searchBar, { borderWidth: focused ? 1.8 : 1, borderColor: focused ? TEAL : colors.border }]}>
           <SearchIcon />
           <TextInput
             ref={inputRef}
@@ -52,7 +54,8 @@ export function AppHeader({
             placeholderTextColor="#AFAFAF"
             value={value}
             onChangeText={onChangeText}
-            onFocus={onFocus}
+            onFocus={() => { setFocused(true); onFocus?.(); }}
+            onBlur={() => setFocused(false)}
             returnKeyType="search"
             autoFocus={showClose}
             clearButtonMode="while-editing"
@@ -113,7 +116,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 16,
+    borderRadius: 12,
     paddingHorizontal: 14,
     height: 50,
     gap: 10,

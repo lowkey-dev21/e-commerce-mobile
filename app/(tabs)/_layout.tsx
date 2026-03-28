@@ -36,17 +36,17 @@ function CartTabButton({ onPress }: { onPress?: (e: GestureResponderEvent) => vo
           <View
             className="absolute rounded-full items-center justify-center"
             style={{
-              top: 4,
-              right: 4,
-              minWidth: 18,
-              height: 18,
-              backgroundColor: '#FF4444',
+              top: -2,
+              right: -4,
+              minWidth: 22,
+              height: 22,
+              backgroundColor: '#1A1A1A',
               borderWidth: 2,
               borderColor: '#fff',
-              paddingHorizontal: 4,
+              paddingHorizontal: 5,
             }}
           >
-            <Text className="text-white font-bold" style={{ fontSize: 9, lineHeight: 12 }}>
+            <Text className="text-white font-bold" style={{ fontSize: 11, lineHeight: 14 }}>
               {totalItems}
             </Text>
           </View>
