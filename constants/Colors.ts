@@ -1,10 +1,10 @@
 export const Colors = {
   light: {
-    primary: '#6C63FF',
-    primaryLight: '#EEF0FF',
+    primary: '#4AB7B6',
+    primaryLight: '#E6F7F7',
     background: '#FFFFFF',
     card: '#FFFFFF',
-    text: '#1A1A2E',
+    text: '#1A1A1A',
     textSecondary: '#6B7280',
     border: '#E5E7EB',
     success: '#10B981',
@@ -17,8 +17,8 @@ export const Colors = {
     skeletonHighlight: '#F3F4F6',
   },
   dark: {
-    primary: '#7C73FF',
-    primaryLight: '#1E1B4B',
+    primary: '#4AB7B6',
+    primaryLight: '#0D3333',
     background: '#0F0F1A',
     card: '#1C1C2E',
     text: '#F1F1F5',

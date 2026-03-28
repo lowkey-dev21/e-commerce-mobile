@@ -1,4 +1,5 @@
 import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
+import { useTheme } from '../../hooks/useTheme';
 
 const TEAL = '#4AB7B6';
 
@@ -32,32 +33,33 @@ export function PreviousOrderCard({
   order = MOCK_ORDER,
   onOrderAgain,
 }: PreviousOrderCardProps) {
+  const colors = useTheme();
   return (
     <View style={styles.wrapper}>
-      <View style={styles.card}>
+      <View style={[styles.card, { backgroundColor: colors.card }]}>
         {/* Status */}
         <Text style={styles.status}>{order.status}</Text>
-        <Text style={styles.date}>{order.date}</Text>
+        <Text style={[styles.date, { color: colors.textSecondary }]}>{order.date}</Text>
 
         {/* Product thumbnails */}
         <View style={styles.thumbRow}>
           {order.images.map((img, i) => (
-            <Image key={i} source={img} style={styles.thumb} resizeMode="contain" />
+            <Image key={i} source={img} style={[styles.thumb, { backgroundColor: colors.skeleton }]} resizeMode="contain" />
           ))}
           {order.extraCount && order.extraCount > 0 && (
-            <View style={styles.extraBadge}>
-              <Text style={styles.extraText}>+{order.extraCount}{'\n'}More</Text>
+            <View style={[styles.extraBadge, { backgroundColor: colors.skeleton }]}>
+              <Text style={[styles.extraText, { color: colors.textSecondary }]}>{order.extraCount}{'\n'}More</Text>
             </View>
           )}
         </View>
 
-        <View style={styles.divider} />
+        <View style={[styles.divider, { backgroundColor: colors.border }]} />
 
         {/* Footer */}
         <View style={styles.footer}>
           <View>
-            <Text style={styles.orderId}>Order ID : {order.orderId}</Text>
-            <Text style={styles.total}>Final Total : ₹ {order.total}</Text>
+            <Text style={[styles.orderId, { color: colors.textSecondary }]}>Order ID : {order.orderId}</Text>
+            <Text style={[styles.total, { color: colors.text }]}>Final Total : ₹ {order.total}</Text>
           </View>
           <Pressable onPress={onOrderAgain} style={styles.orderBtn}>
             <Text style={styles.orderBtnText}>Order Again</Text>
@@ -78,17 +80,17 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     flexDirection: 'row',
     borderRadius: 16,
-    overflow: 'hidden',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.07,
-    shadowRadius: 8,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.10,
+    shadowRadius: 10,
+    elevation: 4,
   },
   card: {
     flex: 1,
-    backgroundColor: '#fff',
     padding: 14,
+    borderTopLeftRadius: 16,
+    borderBottomLeftRadius: 16,
   },
   status: {
     fontSize: 13,
@@ -98,7 +100,6 @@ const styles = StyleSheet.create({
   date: {
     fontSize: 12,
     fontFamily: 'DMSans_400Regular',
-    color: '#888',
     marginTop: 2,
     marginBottom: 10,
   },
@@ -112,25 +113,21 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 8,
-    backgroundColor: '#F5F5F5',
   },
   extraBadge: {
     width: 50,
     height: 50,
     borderRadius: 8,
-    backgroundColor: '#F5F5F5',
     alignItems: 'center',
     justifyContent: 'center',
   },
   extraText: {
     fontSize: 11,
     fontFamily: 'DMSans_500Medium',
-    color: '#555',
     textAlign: 'center',
   },
   divider: {
     height: 1,
-    backgroundColor: '#F0F0F0',
     marginBottom: 10,
   },
   footer: {
@@ -141,12 +138,10 @@ const styles = StyleSheet.create({
   orderId: {
     fontSize: 11,
     fontFamily: 'DMSans_400Regular',
-    color: '#888',
   },
   total: {
     fontSize: 14,
     fontFamily: 'DMSans_700Bold',
-    color: '#1A1A1A',
     marginTop: 2,
   },
   orderBtn: {
@@ -161,18 +156,20 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   promoTag: {
-    width: 32,
-    backgroundColor: '#F4A94E',
+    width: 28,
+    backgroundColor: '#4AB7B6',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 8,
+    borderTopRightRadius: 16,
+    borderBottomRightRadius: 16,
+    overflow: 'hidden',
   },
   promoText: {
-    fontSize: 9,
+    fontSize: 8,
     fontFamily: 'DMSans_500Medium',
     color: '#fff',
     textAlign: 'center',
     transform: [{ rotate: '90deg' }],
-    width: 110,
+    width: 120,
   },
 });

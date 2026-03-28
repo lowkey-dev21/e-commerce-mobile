@@ -1,5 +1,6 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { LocationIcon } from '../icons/LocationIcon';
+import { useTheme } from '../../hooks/useTheme';
 
 const TEAL = '#4AB7B6';
 
@@ -14,18 +15,19 @@ export function LocationBar({
   address = 'BTM Layout, 500628',
   onPress,
 }: LocationBarProps) {
+  const colors = useTheme();
   return (
-    <Pressable onPress={onPress} style={styles.container}>
+    <Pressable onPress={onPress} style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.iconCircle}>
         <LocationIcon color="white" size={20} />
       </View>
 
       <View style={styles.textCol}>
-        <Text style={styles.city}>{city}</Text>
-        <Text style={styles.address}>{address}</Text>
+        <Text style={[styles.city, { color: colors.text }]}>{city}</Text>
+        <Text style={[styles.address, { color: colors.textSecondary }]}>{address}</Text>
       </View>
 
-      <Text style={styles.arrow}>›</Text>
+      <Text style={[styles.arrow, { color: colors.textSecondary }]}>›</Text>
     </Pressable>
   );
 }
@@ -36,7 +38,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 10,
-    backgroundColor: '#fff',
     gap: 12,
   },
   iconCircle: {
@@ -51,17 +52,14 @@ const styles = StyleSheet.create({
   city: {
     fontSize: 14,
     fontFamily: 'DMSans_700Bold',
-    color: '#1A1A1A',
   },
   address: {
     fontSize: 12,
     fontFamily: 'DMSans_400Regular',
-    color: '#888',
     marginTop: 1,
   },
   arrow: {
     fontSize: 22,
-    color: '#888',
     marginRight: 4,
   },
 });

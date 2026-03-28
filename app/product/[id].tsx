@@ -1,45 +1,91 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  View,
-  Text,
-  Image,
-  ScrollView,
-  StyleSheet,
-  Pressable,
-  Alert,
-  Dimensions,
-  Animated,
+  View, Text, Image, ScrollView, StyleSheet, Pressable,
+  Dimensions, ActivityIndicator,
 } from 'react-native';
-import { useLocalSearchParams, useNavigation } from 'expo-router';
-import { productService, Product } from '../../services/api';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Svg, { Path, Line, Circle } from 'react-native-svg';
 import { useCartStore } from '../../store/cartStore';
-import { ErrorState } from '../../components/ErrorState';
 import { useTheme } from '../../hooks/useTheme';
+import { useThemeStore } from '../../store/themeStore';
+import { productService, Product } from '../../services/api';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
+const TEAL = '#4AB7B6';
+const IMAGE_HEIGHT = height * 0.48;
+
+const COLORS = ['#A0522D', '#1A1A1A', TEAL, '#4CAF50'];
+
+function BackIcon({ color }: { color: string }) {
+  return (
+    <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
+      <Path d="M15 18L9 12L15 6" stroke={color} strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" />
+    </Svg>
+  );
+}
+
+function BagIcon({ color }: { color: string }) {
+  return (
+    <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
+      <Path d="M6 2L3 6V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V6L18 2H6Z" stroke={color} strokeWidth={1.8} strokeLinejoin="round" />
+      <Path d="M3 6H21" stroke={color} strokeWidth={1.8} strokeLinecap="round" />
+      <Path d="M16 10C16 12.2091 14.2091 14 12 14C9.79086 14 8 12.2091 8 10" stroke={color} strokeWidth={1.8} strokeLinecap="round" />
+    </Svg>
+  );
+}
+
+function StarIcon() {
+  return (
+    <Svg width={14} height={14} viewBox="0 0 24 24" fill="#FBBF24">
+      <Path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+    </Svg>
+  );
+}
+
+// Mock product for local IDs (no API)
+function getMockProduct(id: string): Product {
+  const isWasher = id === '2' || id === '4' || id === '6';
+  return {
+    _id: id,
+    name: isWasher ? 'LG Washing Machine 8kg' : 'Luxury Wing Chair',
+    description: 'Premium quality product designed for comfort and durability. This item combines modern aesthetics with practical functionality, making it a perfect addition to your home. Built with high-grade materials to ensure long-lasting performance.',
+    price: isWasher ? 45999 : 3599,
+    category: isWasher ? 'Appliances' : 'Furniture',
+    image: '',
+    stock: 12,
+    rating: isWasher ? 4.6 : 4.8,
+    reviewCount: isWasher ? 320 : 214,
+    createdAt: new Date().toISOString(),
+  };
+}
 
 export default function ProductDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const router = useRouter();
+  const insets = useSafeAreaInsets();
   const colors = useTheme();
-  const navigation = useNavigation();
+  const { isDark } = useThemeStore();
   const { addItem, items } = useCartStore();
+
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
-
-  const scale = useRef(new Animated.Value(1)).current;
+  const [selectedColor, setSelectedColor] = useState(0);
+  const [expanded, setExpanded] = useState(false);
 
   const cartItem = product ? items.find((i) => i.product._id === product._id) : null;
+  const deliveryDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
+    .toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
 
   useEffect(() => {
     const load = async () => {
       try {
         const res = await productService.getById(id!);
         setProduct(res.data.data);
-        navigation.setOptions({ title: res.data.data.name });
-      } catch (e: any) {
-        setError(e.message || 'Failed to load product');
+      } catch {
+        // Fall back to mock for local IDs
+        setProduct(getMockProduct(id!));
       } finally {
         setLoading(false);
       }
@@ -47,165 +93,320 @@ export default function ProductDetailScreen() {
     load();
   }, [id]);
 
-  const handleAddToCart = () => {
-    if (!product) return;
-    addItem(product, quantity);
-    Animated.sequence([
-      Animated.spring(scale, { toValue: 1.2, useNativeDriver: true }),
-      Animated.spring(scale, { toValue: 1, useNativeDriver: true }),
-    ]).start();
-    Alert.alert('Added to Cart!', `${quantity}x ${product.name} added to your cart.`);
-  };
-
   if (loading) {
     return (
-      <View style={[styles.loading, { backgroundColor: colors.background }]}>
-        <Text style={{ fontSize: 32 }}>⏳</Text>
+      <View style={[styles.centered, { backgroundColor: colors.skeleton }]}>
+        <ActivityIndicator size="large" color={TEAL} />
       </View>
     );
   }
 
-  if (error || !product) {
-    return <ErrorState message={error || 'Product not found'} />;
-  }
+  if (!product) return null;
+
+  const localImages: Record<string, any> = {
+    '1': require('../../assets/chair.png'),
+    '2': require('../../assets/washing-machine.png'),
+    '3': require('../../assets/chair.png'),
+    '4': require('../../assets/washing-machine.png'),
+    '5': require('../../assets/chair.png'),
+    '6': require('../../assets/washing-machine.png'),
+  };
+  const localImage = localImages[id!];
+  const imageSource = localImage ? localImage : (product.image ? { uri: product.image } : null);
+
+  const shortDesc = product.description.length > 140
+    ? product.description.slice(0, 140) + '...'
+    : product.description;
 
   return (
-    <ScrollView
-      style={[styles.container, { backgroundColor: colors.background }]}
-      showsVerticalScrollIndicator={false}
-    >
-      {/* Product Image */}
-      <Image source={{ uri: product.image }} style={styles.image} resizeMode="cover" />
+    <View style={[styles.screen, { backgroundColor: colors.skeleton }]}>
 
-      <View style={styles.content}>
-        {/* Category + Rating */}
-        <View style={styles.metaRow}>
-          <View style={[styles.categoryBadge, { backgroundColor: colors.primaryLight }]}>
-            <Text style={[styles.categoryText, { color: colors.primary }]}>
-              {product.category}
-            </Text>
-          </View>
-          <View style={styles.ratingRow}>
-            {[1, 2, 3, 4, 5].map((star) => (
-              <Text
-                key={star}
-                style={{ fontSize: 14, color: star <= Math.round(product.rating) ? colors.star : colors.border }}
-              >
-                ★
-              </Text>
-            ))}
-            <Text style={[styles.ratingText, { color: colors.textSecondary }]}>
-              {product.rating.toFixed(1)} ({product.reviewCount.toLocaleString()})
-            </Text>
-          </View>
+      {/* Floating header */}
+      <View style={[styles.header, { top: insets.top + 10 }]}>
+        <Pressable onPress={() => router.back()} style={[styles.headerBtn, { backgroundColor: colors.card }]}>
+          <BackIcon color={colors.text} />
+        </Pressable>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>Detail Product</Text>
+        <Pressable style={[styles.headerBtn, { backgroundColor: colors.card }]}>
+          <BagIcon color={colors.text} />
+        </Pressable>
+      </View>
+
+      <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
+
+        {/* Product image */}
+        <View style={[styles.imageContainer, { height: IMAGE_HEIGHT }]}>
+          {imageSource && (
+            <Image source={imageSource} style={styles.image} resizeMode="contain" />
+          )}
         </View>
 
-        {/* Name */}
-        <Text style={[styles.name, { color: colors.text }]}>
-          {product.name}
-        </Text>
+        {/* Bottom sheet card */}
+        <View style={[styles.sheet, { backgroundColor: colors.background }]}>
 
-        {/* Price */}
-        <Text style={[styles.price, { color: colors.primary }]}>
-          ${product.price.toFixed(2)}
-        </Text>
-
-        {/* Stock */}
-        <Text
-          style={[
-            styles.stock,
-            { color: product.stock > 0 ? colors.success : colors.error },
-          ]}
-        >
-          {product.stock > 0 ? `✓ In stock (${product.stock} available)` : '✗ Out of stock'}
-        </Text>
-
-        {/* Description */}
-        <View>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>Description</Text>
-          <Text style={[styles.description, { color: colors.textSecondary }]}>
-            {product.description}
-          </Text>
-        </View>
-
-        {/* Quantity Selector */}
-        {product.stock > 0 && (
-          <View style={styles.qtySection}>
-            <Text style={[styles.sectionTitle, { color: colors.text }]}>Quantity</Text>
+          {/* Name + qty */}
+          <View style={styles.nameRow}>
+            <Text style={[styles.name, { color: colors.text }]} numberOfLines={2}>
+              {product.name}
+            </Text>
             <View style={styles.qtyRow}>
               <Pressable
-                onPress={() => setQuantity((q) => Math.max(1, q - 1))}
-                style={[styles.qtyBtn, { borderColor: colors.border, backgroundColor: colors.card }]}
+                onPress={() => setQuantity(Math.max(1, quantity - 1))}
+                style={[styles.qtyBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
               >
-                <Text style={[styles.qtyBtnText, { color: colors.text }]}>−</Text>
+                <Text style={[styles.qtySymbol, { color: colors.text }]}>−</Text>
               </Pressable>
-              <Text style={[styles.qty, { color: colors.text }]}>{quantity}</Text>
+              <Text style={[styles.qtyNum, { color: colors.text }]}>{quantity}</Text>
               <Pressable
-                onPress={() => setQuantity((q) => Math.min(product.stock, q + 1))}
-                style={[styles.qtyBtn, { borderColor: colors.border, backgroundColor: colors.card }]}
+                onPress={() => setQuantity(quantity + 1)}
+                style={[styles.qtyBtn, { backgroundColor: TEAL }]}
               >
-                <Text style={[styles.qtyBtnText, { color: colors.text }]}>+</Text>
+                <Text style={[styles.qtySymbol, { color: '#fff' }]}>+</Text>
               </Pressable>
             </View>
           </View>
-        )}
 
-        {/* Add to Cart */}
-        <Animated.View style={{ transform: [{ scale }] }}>
-          <Pressable
-            onPress={handleAddToCart}
-            disabled={product.stock === 0}
-            style={[
-              styles.addBtn,
-              { backgroundColor: product.stock === 0 ? colors.border : colors.primary },
-            ]}
-          >
-            <Text style={styles.addBtnText}>
-              {product.stock === 0
-                ? 'Out of Stock'
-                : cartItem
-                ? `Update Cart (${cartItem.quantity} in cart)`
-                : 'Add to Cart 🛒'}
+          {/* Rating + stock */}
+          <View style={styles.ratingRow}>
+            <StarIcon />
+            <Text style={[styles.rating, { color: colors.text }]}>{product.rating.toFixed(1)}</Text>
+            <Text style={[styles.reviews, { color: colors.textSecondary }]}>
+              ({product.reviewCount} Review)
             </Text>
-          </Pressable>
-        </Animated.View>
+            <View style={styles.dot} />
+            <Text style={[styles.stock, { color: product.stock > 0 ? TEAL : colors.error }]}>
+              {product.stock > 0 ? 'Available in stock' : 'Out of stock'}
+            </Text>
+          </View>
+
+          {/* Color picker */}
+          <Text style={[styles.sectionLabel, { color: colors.text }]}>Color</Text>
+          <View style={styles.colorRow}>
+            {COLORS.map((c, i) => (
+              <Pressable
+                key={c}
+                onPress={() => setSelectedColor(i)}
+                style={[
+                  styles.colorCircle,
+                  { backgroundColor: c },
+                  selectedColor === i && styles.colorSelected,
+                ]}
+              >
+                {selectedColor === i && (
+                  <Svg width={12} height={12} viewBox="0 0 24 24" fill="none">
+                    <Path d="M20 6L9 17L4 12" stroke="#fff" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" />
+                  </Svg>
+                )}
+              </Pressable>
+            ))}
+          </View>
+
+          {/* Description */}
+          <Text style={[styles.sectionLabel, { color: colors.text }]}>Description</Text>
+          <Text style={[styles.desc, { color: colors.textSecondary }]}>
+            {expanded ? product.description : shortDesc}
+            {product.description.length > 140 && (
+              <Text onPress={() => setExpanded(!expanded)} style={{ color: TEAL, fontFamily: 'DMSans_700Bold' }}>
+                {expanded ? ' Read Less' : ' Read More'}
+              </Text>
+            )}
+          </Text>
+
+          <View style={{ height: 120 }} />
+        </View>
+      </ScrollView>
+
+      {/* Sticky bottom */}
+      <View style={[styles.bottom, { backgroundColor: colors.background, paddingBottom: insets.bottom + 12, borderTopColor: colors.border }]}>
+        <View>
+          <Text style={[styles.priceLabel, { color: colors.textSecondary }]}>Total Price</Text>
+          <Text style={[styles.price, { color: colors.text }]}>
+            ₹{(product.price * quantity).toLocaleString()}
+          </Text>
+        </View>
+        <Pressable
+          onPress={() => product && addItem(product, quantity)}
+          disabled={product.stock === 0}
+          style={[styles.addBtn, { backgroundColor: product.stock === 0 ? colors.border : TEAL }]}
+        >
+          <BagIcon color="#fff" />
+          <Text style={styles.addBtnText}>
+            {cartItem ? 'Update Cart' : 'Add to Cart'}
+          </Text>
+        </Pressable>
       </View>
-    </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  image: { width, height: 320 },
-  content: { padding: 20 },
-  metaRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
-  categoryBadge: { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 20 },
-  categoryText: { fontSize: 12, fontFamily: 'DMSans_700Bold', textTransform: 'uppercase' },
-  ratingRow: { flexDirection: 'row', alignItems: 'center', gap: 3 },
-  ratingText: { fontSize: 13, marginLeft: 4, fontFamily: 'DMSans_400Regular' },
-  name: { fontSize: 24, fontFamily: 'DMSans_700Bold', lineHeight: 32, marginBottom: 10 },
-  price: { fontSize: 28, fontFamily: 'DMSans_700Bold', marginBottom: 8 },
-  stock: { fontSize: 13, fontFamily: 'DMSans_500Medium', marginBottom: 20 },
-  sectionTitle: { fontSize: 16, fontFamily: 'DMSans_700Bold', marginBottom: 8 },
-  description: { fontSize: 15, lineHeight: 24, marginBottom: 24, fontFamily: 'DMSans_400Regular' },
-  qtySection: { marginBottom: 24 },
-  qtyRow: { flexDirection: 'row', alignItems: 'center', gap: 20 },
-  qtyBtn: {
-    width: 42,
-    height: 42,
-    borderRadius: 12,
-    borderWidth: 1,
+  screen: { flex: 1 },
+  centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  header: {
+    position: 'absolute',
+    left: 20,
+    right: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    zIndex: 10,
+  },
+  headerBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  headerTitle: {
+    fontSize: 16,
+    fontFamily: 'DMSans_700Bold',
+  },
+  imageContainer: {
+    width,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  qtyBtnText: { fontSize: 20, fontFamily: 'DMSans_500Medium' },
-  qty: { fontSize: 20, fontFamily: 'DMSans_700Bold', minWidth: 28, textAlign: 'center' },
-  addBtn: {
-    paddingVertical: 18,
-    borderRadius: 16,
-    alignItems: 'center',
-    marginBottom: 32,
+  image: {
+    width: width * 0.8,
+    height: '85%',
   },
-  addBtnText: { color: '#fff', fontSize: 17, fontFamily: 'DMSans_700Bold' },
+  sheet: {
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
+    padding: 24,
+    paddingTop: 28,
+    marginTop: -28,
+  },
+  nameRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 12,
+    gap: 12,
+  },
+  name: {
+    flex: 1,
+    fontSize: 20,
+    fontFamily: 'DMSans_700Bold',
+    lineHeight: 28,
+  },
+  qtyRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  qtyBtn: {
+    width: 34,
+    height: 34,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+  },
+  qtySymbol: {
+    fontSize: 18,
+    lineHeight: 22,
+    fontFamily: 'DMSans_500Medium',
+  },
+  qtyNum: {
+    fontSize: 16,
+    fontFamily: 'DMSans_700Bold',
+    minWidth: 20,
+    textAlign: 'center',
+  },
+  ratingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    marginBottom: 20,
+  },
+  rating: {
+    fontSize: 13,
+    fontFamily: 'DMSans_700Bold',
+  },
+  reviews: {
+    fontSize: 13,
+    fontFamily: 'DMSans_400Regular',
+  },
+  dot: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#CCC',
+  },
+  stock: {
+    fontSize: 13,
+    fontFamily: 'DMSans_500Medium',
+  },
+  sectionLabel: {
+    fontSize: 15,
+    fontFamily: 'DMSans_700Bold',
+    marginBottom: 12,
+  },
+  colorRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 20,
+  },
+  colorCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  colorSelected: {
+    borderWidth: 3,
+    borderColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  desc: {
+    fontSize: 14,
+    lineHeight: 22,
+    fontFamily: 'DMSans_400Regular',
+  },
+  bottom: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 24,
+    paddingTop: 16,
+    borderTopWidth: 1,
+  },
+  priceLabel: {
+    fontSize: 12,
+    fontFamily: 'DMSans_400Regular',
+    marginBottom: 2,
+  },
+  price: {
+    fontSize: 22,
+    fontFamily: 'DMSans_700Bold',
+  },
+  addBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingHorizontal: 28,
+    paddingVertical: 16,
+    borderRadius: 20,
+  },
+  addBtnText: {
+    color: '#fff',
+    fontSize: 15,
+    fontFamily: 'DMSans_700Bold',
+  },
 });

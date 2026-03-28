@@ -26,18 +26,9 @@ const SORT_OPTIONS = [
   { label: 'A–Z', value: 'name' },
 ];
 
-function SearchIcon() {
-  return (
-    <Svg width={18} height={18} viewBox="0 0 24 24" fill="none">
-      <Circle cx={11} cy={11} r={8} stroke="#AFAFAF" strokeWidth={2} />
-      <Path d="M21 21L16.65 16.65" stroke="#AFAFAF" strokeWidth={2} strokeLinecap="round" />
-    </Svg>
-  );
-}
 
 export default function SearchScreen() {
   const colors = useTheme();
-  const insets = useSafeAreaInsets();
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('All');
   const [sort, setSort] = useState('');

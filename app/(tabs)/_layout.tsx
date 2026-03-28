@@ -2,16 +2,19 @@ import { Tabs } from 'expo-router';
 import { View, Pressable, Text, GestureResponderEvent } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { HomeIcon } from '../../components/icons/HomeIcon';
-import { DashboardIcon } from '../../components/icons/DashboardIcon';
 import { CartIcon } from '../../components/icons/CartIcon';
 import { WishlistIcon } from '../../components/icons/WishlistIcon';
 import { useCartStore } from '../../store/cartStore';
+import { useTheme } from '../../hooks/useTheme';
+import { OrdersIcon } from '../../components/icons/OrdersIcon';
 
-const ORANGE = '#F4A94E';
+const TEAL = '#4AB7B6';
+const ORANGE = '#4AB7B6';
 const INACTIVE = '#C5C5C5';
 
 function CartTabButton({ onPress }: { onPress?: (e: GestureResponderEvent) => void }) {
   const totalItems = useCartStore((s) => s.totalItems());
+  const colors = useTheme();
   return (
     <Pressable onPress={onPress} className="flex-1 items-center justify-end pb-[18px]">
       <View
@@ -19,7 +22,7 @@ function CartTabButton({ onPress }: { onPress?: (e: GestureResponderEvent) => vo
         style={{
           backgroundColor: ORANGE,
           borderWidth: 4,
-          borderColor: '#fff',
+          borderColor: colors.tabBar,
           shadowColor: '#000',
           shadowOffset: { width: 0, height: 6 },
           shadowOpacity: 0.18,
@@ -54,15 +57,15 @@ function CartTabButton({ onPress }: { onPress?: (e: GestureResponderEvent) => vo
 }
 
 export default function TabsLayout() {
+  const colors = useTheme();
   return (
     <Tabs
       screenOptions={{
         tabBarStyle: {
-          backgroundColor: '#fff',
+          backgroundColor: colors.tabBar,
           borderTopWidth: 0,
-          height: 70,
+          height: 80,
           paddingBottom: 0,
-
           paddingTop: 6,
           elevation: 12,
           shadowColor: '#000',
@@ -70,9 +73,14 @@ export default function TabsLayout() {
           shadowOpacity: 0.06,
           shadowRadius: 6,
         },
-        tabBarActiveTintColor: ORANGE,
+        tabBarActiveTintColor: TEAL,
         tabBarInactiveTintColor: INACTIVE,
-        tabBarShowLabel: false,
+        tabBarShowLabel: true,
+        tabBarLabelStyle: {
+          fontSize: 11,
+          fontFamily: 'DMSans_500Medium',
+          marginTop: 2,
+        },
         headerShown: false,
       }}
     >
@@ -86,10 +94,13 @@ export default function TabsLayout() {
       />
       <Tabs.Screen
         name="search"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="orders"
         options={{
-          title: 'Categories',
-          headerShown: false,
-          tabBarIcon: ({ color }) => <DashboardIcon color={color} />,
+          title: 'My Orders',
+          tabBarIcon: ({ color }) => <OrdersIcon color={color} />,
         }}
       />
       <Tabs.Screen

@@ -1,86 +1,103 @@
-import { View, Text, Image, FlatList, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, Image, FlatList, StyleSheet, Dimensions, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
+import { useState } from 'react';
+import { useTheme } from '../../hooks/useTheme';
 
 const { width } = Dimensions.get('window');
-const CARD_WIDTH = width - 48;
+const CARD_WIDTH = width - 40;
+const TEAL = '#4AB7B6';
 
 interface Banner {
   id: string;
   tag: string;
   title: string;
   subtitle: string;
-  caption: string;
   image: any;
 }
 
 const BANNERS: Banner[] = [
-  {
-    id: '1',
-    tag: 'Happy Weekend',
-    title: '25% OFF',
-    subtitle: '*for All Menus',
-    caption: '',
-    image: require('../../assets/banner.png'),
-  },
-  {
-    id: '2',
-    tag: 'Flash Sale',
-    title: '40% OFF',
-    subtitle: '*on Electronics',
-    caption: '',
-    image: require('../../assets/banner.png'),
-  },
+  { id: '1', tag: 'Happy Weekend', title: '25% OFF', subtitle: '*for All Menus', image: require('../../assets/banner.png') },
+  { id: '2', tag: 'Flash Sale', title: '40% OFF', subtitle: '*on Electronics', image: require('../../assets/banner.png') },
+  { id: '3', tag: 'Special Offer', title: '15% OFF', subtitle: '*on Furniture', image: require('../../assets/banner.png') },
 ];
 
 function BannerCard({ item }: { item: Banner }) {
+  const colors = useTheme();
   return (
-    <View style={styles.card}>
-      {/* Text side */}
+    <View style={[styles.card, { backgroundColor: colors.card }]}>
       <View style={styles.textSide}>
         <View style={styles.dotsGrid}>
           {Array.from({ length: 9 }).map((_, i) => (
-            <View key={i} style={styles.dot} />
+            <View key={i} style={styles.decorDot} />
           ))}
         </View>
-        <Text style={styles.tag}>{item.tag}</Text>
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.subtitle}>{item.subtitle}</Text>
+        <Text style={[styles.tag, { color: colors.textSecondary }]}>{item.tag}</Text>
+        <Text style={[styles.title, { color: colors.text }]}>{item.title}</Text>
+        <Text style={[styles.subtitle, { color: colors.textSecondary }]}>{item.subtitle}</Text>
       </View>
-
-      {/* Image side */}
       <Image source={item.image} style={styles.image} resizeMode="cover" />
     </View>
   );
 }
 
 export function BannerCarousel() {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const handleScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const index = Math.round(e.nativeEvent.contentOffset.x / (CARD_WIDTH + 16));
+    setActiveIndex(index);
+  };
+
   return (
-    <FlatList
-      data={BANNERS}
-      keyExtractor={(item) => item.id}
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      pagingEnabled
-      snapToInterval={CARD_WIDTH + 16}
-      decelerationRate="fast"
-      contentContainerStyle={styles.list}
-      renderItem={({ item }) => <BannerCard item={item} />}
-    />
+    <View>
+      <FlatList
+        data={BANNERS}
+        keyExtractor={(item) => item.id}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        snapToInterval={CARD_WIDTH + 16}
+        decelerationRate="fast"
+        contentContainerStyle={styles.list}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        className='pb-4'
+        renderItem={({ item }) => <BannerCard item={item} />}
+      />
+      {/* Dots */}
+      <View className='' style={styles.dotsRow}>
+        {BANNERS.map((_, i) => (
+          <View
+            key={i}
+            style={[
+              styles.dot,
+              i === activeIndex ? styles.dotActive : styles.dotInactive,
+            ]}
+          />
+        ))}
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  list: { paddingHorizontal: 16, gap: 16 },
+  list: { paddingHorizontal: 20, gap: 16 },
   card: {
     width: CARD_WIDTH,
     height: 150,
-    borderRadius: 16,
+    borderRadius: 20,
     flexDirection: 'row',
-    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.10,
+    shadowRadius: 10,
+    elevation: 4,
   },
   textSide: {
     flex: 1,
     padding: 16,
     justifyContent: 'center',
+    borderTopLeftRadius: 20,
+    borderBottomLeftRadius: 20,
+    overflow: 'hidden',
   },
   dotsGrid: {
     flexDirection: 'row',
@@ -89,33 +106,39 @@ const styles = StyleSheet.create({
     gap: 4,
     marginBottom: 8,
   },
-  dot: {
+  decorDot: {
     width: 4,
     height: 4,
     borderRadius: 2,
-    backgroundColor: '#4AB7B6',
-    opacity: 0.5,
+    backgroundColor: TEAL,
+    opacity: 0.4,
   },
-  tag: {
-    fontSize: 12,
-    fontFamily: 'DMSans_400Regular',
-    color: '#555',
-    marginBottom: 2,
-  },
-  title: {
-    fontSize: 26,
-    fontFamily: 'DMSans_700Bold',
-    color: '#1A1A1A',
-    lineHeight: 30,
-  },
-  subtitle: {
-    fontSize: 11,
-    fontFamily: 'DMSans_400Regular',
-    color: '#777',
-    marginTop: 2,
-  },
+  tag: { fontSize: 12, fontFamily: 'DMSans_400Regular', marginBottom: 2 },
+  title: { fontSize: 26, fontFamily: 'DMSans_700Bold', lineHeight: 30 },
+  subtitle: { fontSize: 11, fontFamily: 'DMSans_400Regular', marginTop: 2 },
   image: {
     width: '48%',
     height: '100%',
+    borderTopRightRadius: 20,
+    borderBottomRightRadius: 20,
+  },
+  dotsRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 6,
+    marginTop: 12,
+    marginBottom: 8,
+  },
+  dot: {
+    height: 7,
+    borderRadius: 4,
+  },
+  dotActive: {
+    width: 20,
+    backgroundColor: TEAL,
+  },
+  dotInactive: {
+    width: 7,
+    backgroundColor: '#D0D0D0',
   },
 });
