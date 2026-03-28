@@ -9,7 +9,19 @@
       "Bash(xargs -I{} sh -c \"ls /proc/{}/fd 2>/dev/null | xargs -I[] readlink /proc/{}/fd/[] 2>/dev/null | grep -q \"\"socket:\\\\[34751\\\\]\"\" && echo {}\")",
       "Bash(kill:*)",
       "Bash(bun add:*)",
-      "Bash(npx expo:*)"
+      "Bash(npx expo:*)",
+      "Bash(npm install:*)",
+      "Bash(find /Users/apple/Desktop/DEV/RN_DEV/ecommerce/mobile/node_modules/nativewind -name babel*)",
+      "Bash(grep -r react-native-worklets /Users/apple/Desktop/DEV/RN_DEV/ecommerce/mobile/node_modules/react-native-css-interop/babel*)",
+      "Bash(npm show:*)",
+      "Bash(ls /Users/apple/Desktop/DEV/RN_DEV/ecommerce/mobile/node_modules/react-native-worklets/plugin*)",
+      "Bash(find /Users/apple/Desktop/DEV/RN_DEV/ecommerce/mobile/node_modules/react-native-worklets -name plugin*)",
+      "Bash(npm uninstall:*)",
+      "Bash(node -e \"console.log\\(require\\(''/Users/apple/Desktop/DEV/RN_DEV/ecommerce/mobile/node_modules/tailwindcss/package.json''\\).version\\)\")",
+      "Read(//Users/apple/Downloads/**)",
+      "Bash(cp \"/Users/apple/Downloads/Group 9.png\" /Users/apple/Desktop/DEV/RN_DEV/ecommerce/mobile/assets/banner.png)",
+      "Bash(cp \"/Users/apple/Downloads/chair.png\" /Users/apple/Desktop/DEV/RN_DEV/ecommerce/mobile/assets/chair.png)",
+      "Bash(cp \"/Users/apple/Downloads/washing-machine.png\" /Users/apple/Desktop/DEV/RN_DEV/ecommerce/mobile/assets/washing-machine.png)"
     ]
   }
 }

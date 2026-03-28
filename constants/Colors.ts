@@ -2,7 +2,7 @@ export const Colors = {
   light: {
     primary: '#6C63FF',
     primaryLight: '#EEF0FF',
-    background: '#F8F9FA',
+    background: '#FFFFFF',
     card: '#FFFFFF',
     text: '#1A1A2E',
     textSecondary: '#6B7280',

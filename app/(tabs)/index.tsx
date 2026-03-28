@@ -1,156 +1,116 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import {
-  View,
-  FlatList,
-  StyleSheet,
-  ScrollView,
-  Text,
-  Pressable,
-  RefreshControl,
-} from 'react-native';
-import { productService, Product } from '../../services/api';
-import { ProductCard } from '../../components/ProductCard';
-import { SkeletonCard } from '../../components/SkeletonCard';
-import { ErrorState } from '../../components/ErrorState';
-import { EmptyState } from '../../components/EmptyState';
-import { useTheme } from '../../hooks/useTheme';
+import React from 'react';
+import { ScrollView, View, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
+import { HomeHeader } from '../../components/home/HomeHeader';
+import { LocationBar } from '../../components/home/LocationBar';
+import { BannerCarousel } from '../../components/home/BannerCarousel';
+import { CategorySection } from '../../components/home/CategorySection';
+import { PreviousOrderCard } from '../../components/home/PreviousOrderCard';
+import { SectionHeader } from '../../components/SectionHeader';
+import { DealProductCard, DealProduct } from '../../components/DealProductCard';
+import { AppHeader } from '../../components/AppHeader';
 
-const CATEGORIES = ['All', 'Electronics', 'Clothing', 'Home', 'Sports', 'Books'];
+const POPULAR_DEALS: DealProduct[] = [
+  {
+    id: '1',
+    name: 'Moder Chair',
+    price: 3599,
+    rating: 4.8,
+    image: require('../../assets/chair.png'),
+    wishlisted: true,
+  },
+  {
+    id: '2',
+    name: 'LG Washing Machine',
+    price: 45999,
+    rating: 4.8,
+    discount: '5%',
+    image: require('../../assets/washing-machine.png'),
+    wishlisted: true,
+  },
+  {
+    id: '3',
+    name: 'Moder Chair',
+    price: 3599,
+    rating: 4.8,
+    image: require('../../assets/chair.png'),
+  },
+  {
+    id: '4',
+    name: 'LG Washing Machine',
+    price: 45999,
+    rating: 4.8,
+    discount: '10%',
+    image: require('../../assets/washing-machine.png'),
+  },
+];
 
 export default function HomeScreen() {
-  const colors = useTheme();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState('All');
-
-  const fetchProducts = useCallback(async (category?: string) => {
-    try {
-      setError(null);
-      const res = await productService.getAll({ category });
-      setProducts(res.data.data);
-    } catch (e: any) {
-      setError(e.message || 'Failed to load products');
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchProducts(selectedCategory);
-  }, [selectedCategory]);
-
-  const onRefresh = () => {
-    setRefreshing(true);
-    fetchProducts(selectedCategory);
-  };
-
-  const onCategoryPress = (cat: string) => {
-    setSelectedCategory(cat);
-    setLoading(true);
-  };
-
-  if (error && !refreshing) {
-    return (
-      <ErrorState
-        message={error}
-        onRetry={() => {
-          setLoading(true);
-          fetchProducts(selectedCategory);
-        }}
-      />
-    );
-  }
+  const router = useRouter();
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      {/* Category Filter */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.categories}
-        style={[styles.categoriesBar, { backgroundColor: colors.background }]}
-      >
-        {CATEGORIES.map((cat) => (
-          <Pressable
-            key={cat}
-            onPress={() => onCategoryPress(cat)}
-            style={[
-              styles.categoryChip,
-              {
-                backgroundColor: selectedCategory === cat ? colors.primary : colors.card,
-                borderColor: selectedCategory === cat ? colors.primary : colors.border,
-              },
-            ]}
-          >
-            <Text
-              style={[
-                styles.categoryText,
-                { color: selectedCategory === cat ? '#fff' : colors.textSecondary },
-              ]}
-            >
-              {cat}
-            </Text>
-          </Pressable>
-        ))}
-      </ScrollView>
+    <View style={styles.screen}>
+      {/* Fixed Header */}
+      <HomeHeader />
 
-      {/* Product Grid */}
-      {loading ? (
+      <ScrollView showsVerticalScrollIndicator={false} style={{ backgroundColor: '#ffffff' }}>
+
+      {/* Location */}
+      <LocationBar city="Bengaluru" address="BTM Layout, 500628" />
+
+      {/* Search */}
+      <AppHeader
+        placeholder="Search Anything..."
+        withBackground={false}
+        onFocus={() => router.push('/(tabs)/search')}
+      />
+
+      {/* Banner */}
+      <View style={styles.section}>
+        <BannerCarousel />
+      </View>
+
+      {/* Categories */}
+      <View style={styles.section}>
+        <SectionHeader title="Categories" onSeeAll={() => {}} />
+        <CategorySection />
+      </View>
+
+      {/* Previous Order */}
+      <View style={styles.section}>
+        <SectionHeader title="Previous Order" />
+        <PreviousOrderCard />
+      </View>
+
+      {/* Popular Deals */}
+      <View style={styles.section}>
+        <SectionHeader title="Popular Deals" onSeeAll={() => {}} />
         <View style={styles.grid}>
-          {Array.from({ length: 6 }).map((_, i) => (
-            <SkeletonCard key={i} />
+          {POPULAR_DEALS.map((product) => (
+            <DealProductCard key={product.id} product={product} />
           ))}
         </View>
-      ) : products.length === 0 ? (
-        <EmptyState
-          icon="📦"
-          title="No products found"
-          subtitle="Try selecting a different category"
-        />
-      ) : (
-        <FlatList
-          data={products}
-          keyExtractor={(item) => item._id}
-          numColumns={2}
-          columnWrapperStyle={styles.row}
-          contentContainerStyle={styles.list}
-          renderItem={({ item }) => <ProductCard product={item} />}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              tintColor={colors.primary}
-            />
-          }
-          showsVerticalScrollIndicator={false}
-        />
-      )}
+      </View>
+
+        <View style={{ height: 100 }} />
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  categoriesBar: { maxHeight: 60, flexGrow: 0 },
-  categories: { paddingHorizontal: 16, paddingVertical: 12, gap: 8 },
-  categoryChip: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1,
+  screen: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    flexDirection: 'column',
   },
-  categoryText: { fontSize: 13, fontFamily: 'DMSans_500Medium' },
+  section: {
+    marginTop: 20,
+  },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     paddingHorizontal: 16,
-    gap: 16,
-    paddingTop: 16,
     justifyContent: 'space-between',
   },
-  list: { paddingHorizontal: 16, paddingTop: 8 },
-  row: { justifyContent: 'space-between' },
 });
