@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bunx expo:*)",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(lsof:*)",
+      "Bash(fuser:*)",
+      "Bash(netstat -tlnp)",
+      "Bash(xargs -I{} sh -c \"ls /proc/{}/fd 2>/dev/null | xargs -I[] readlink /proc/{}/fd/[] 2>/dev/null | grep -q \"\"socket:\\\\[34751\\\\]\"\" && echo {}\")",
+      "Bash(kill:*)",
+      "Bash(bun add:*)",
+      "Bash(npx expo:*)"
+    ]
+  }
+}

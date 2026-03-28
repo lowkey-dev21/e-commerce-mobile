@@ -68,14 +68,14 @@ const styles = StyleSheet.create({
   },
   category: {
     fontSize: 10,
-    fontWeight: '600',
+    fontFamily: 'DMSans_500Medium',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
     marginBottom: 4,
   },
   name: {
     fontSize: 13,
-    fontWeight: '600',
+    fontFamily: 'DMSans_500Medium',
     lineHeight: 18,
     marginBottom: 8,
   },
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   },
   price: {
     fontSize: 16,
-    fontWeight: '700',
+    fontFamily: 'DMSans_700Bold',
   },
   ratingRow: {
     flexDirection: 'row',
@@ -94,11 +94,11 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   star: { fontSize: 12 },
-  rating: { fontSize: 12 },
+  rating: { fontSize: 12, fontFamily: 'DMSans_400Regular' },
   outOfStock: {
     marginTop: 4,
     fontSize: 11,
     color: '#EF4444',
-    fontWeight: '500',
+    fontFamily: 'DMSans_500Medium',
   },
 });

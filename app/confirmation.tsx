@@ -87,8 +87,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   icon: { fontSize: 48 },
-  title: { fontSize: 28, fontWeight: '800', marginBottom: 12, textAlign: 'center' },
-  subtitle: { fontSize: 15, textAlign: 'center', lineHeight: 22, marginBottom: 24 },
+  title: { fontSize: 28, fontFamily: 'DMSans_700Bold', marginBottom: 12, textAlign: 'center' },
+  subtitle: { fontSize: 15, textAlign: 'center', lineHeight: 22, marginBottom: 24, fontFamily: 'DMSans_400Regular' },
   orderBox: {
     borderWidth: 1,
     borderRadius: 14,
@@ -97,8 +97,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 32,
   },
-  orderLabel: { fontSize: 12, fontWeight: '600', textTransform: 'uppercase', marginBottom: 4 },
-  orderNumber: { fontSize: 22, fontWeight: '800' },
+  orderLabel: { fontSize: 12, fontFamily: 'DMSans_500Medium', textTransform: 'uppercase', marginBottom: 4 },
+  orderNumber: { fontSize: 22, fontFamily: 'DMSans_700Bold' },
   steps: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -107,12 +107,12 @@ const styles = StyleSheet.create({
   },
   step: { alignItems: 'center', flex: 1 },
   stepIcon: { fontSize: 22, marginBottom: 6 },
-  stepLabel: { fontSize: 10, fontWeight: '600', textAlign: 'center' },
+  stepLabel: { fontSize: 10, fontFamily: 'DMSans_500Medium', textAlign: 'center' },
   actions: { width: '100%' },
   primaryBtn: {
     paddingVertical: 16,
     borderRadius: 14,
     alignItems: 'center',
   },
-  primaryBtnText: { color: '#fff', fontSize: 16, fontWeight: '700' },
+  primaryBtnText: { color: '#fff', fontSize: 16, fontFamily: 'DMSans_700Bold' },
 });

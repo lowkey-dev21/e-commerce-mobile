@@ -31,8 +31,8 @@ const styles = StyleSheet.create({
     padding: 32,
   },
   icon: { fontSize: 48, marginBottom: 12 },
-  title: { fontSize: 20, fontWeight: '700', marginBottom: 8 },
-  subtitle: { fontSize: 14, textAlign: 'center', lineHeight: 20, marginBottom: 24 },
+  title: { fontSize: 20, fontFamily: 'DMSans_700Bold', marginBottom: 8 },
+  subtitle: { fontSize: 14, fontFamily: 'DMSans_400Regular', textAlign: 'center', lineHeight: 20, marginBottom: 24 },
   button: { paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 },
-  buttonText: { color: '#fff', fontWeight: '600', fontSize: 15 },
+  buttonText: { color: '#fff', fontFamily: 'DMSans_500Medium', fontSize: 15 },
 });

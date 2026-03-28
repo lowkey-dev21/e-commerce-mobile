@@ -111,7 +111,7 @@ export default function SearchScreen() {
               },
             ]}
           >
-            <Text style={{ color: category === cat ? '#fff' : colors.textSecondary, fontSize: 13, fontWeight: '600' }}>
+            <Text style={{ color: category === cat ? '#fff' : colors.textSecondary, fontSize: 13, fontFamily: 'DMSans_500Medium' }}>
               {cat}
             </Text>
           </Pressable>
@@ -136,7 +136,7 @@ export default function SearchScreen() {
               },
             ]}
           >
-            <Text style={{ color: sort === opt.value ? colors.primary : colors.textSecondary, fontSize: 13, fontWeight: '600' }}>
+            <Text style={{ color: sort === opt.value ? colors.primary : colors.textSecondary, fontSize: 13, fontFamily: 'DMSans_500Medium' }}>
               {opt.label}
             </Text>
           </Pressable>
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     gap: 8,
   },
-  input: { flex: 1, fontSize: 15 },
+  input: { flex: 1, fontSize: 15, fontFamily: 'DMSans_400Regular' },
   chips: { paddingHorizontal: 16, gap: 8, paddingBottom: 8 },
   chip: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, borderWidth: 1 },
   list: { paddingHorizontal: 16, paddingTop: 8 },

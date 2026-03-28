@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
   },
-  categoryText: { fontSize: 13, fontWeight: '600' },
+  categoryText: { fontSize: 13, fontFamily: 'DMSans_500Medium' },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
