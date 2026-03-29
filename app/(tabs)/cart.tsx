@@ -90,7 +90,7 @@ export default function CartScreen() {
                     {item.product.category}
                   </Text>
                   <Text style={[styles.price, { color: TEAL }]}>
-                    ₹{(item.product.price * item.quantity).toLocaleString()}
+                    ${(item.product.price * item.quantity).toLocaleString()}
                   </Text>
 
                   <View style={styles.qtyRow}>
@@ -123,7 +123,7 @@ export default function CartScreen() {
                 Total ({items.reduce((s, i) => s + i.quantity, 0)} items)
               </Text>
               <Text style={[styles.totalPrice, { color: colors.text }]}>
-                ₹{totalPrice().toLocaleString()}
+                ${totalPrice().toLocaleString()}
               </Text>
             </View>
             <Pressable

@@ -1,9 +1,12 @@
 import { View, Text, ImageBackground, FlatList, StyleSheet, Dimensions, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const { width } = Dimensions.get('window');
-const CARD_WIDTH = width - 40;
+const SIDE_PADDING = 20;
+const GAP = 16;
+const CARD_WIDTH = width - SIDE_PADDING * 2;
+const ITEM_STRIDE = CARD_WIDTH + GAP; // distance between snap points
 const TEAL = '#4AB7B6';
 
 interface Banner {
@@ -71,20 +74,35 @@ function BannerCard({ item }: { item: Banner }) {
 
 export function BannerCarousel() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const flatListRef = useRef<FlatList>(null);
+  const activeIndexRef = useRef(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const next = (activeIndexRef.current + 1) % BANNERS.length;
+      flatListRef.current?.scrollToOffset({ offset: next * ITEM_STRIDE, animated: true });
+      activeIndexRef.current = next;
+      setActiveIndex(next);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const index = Math.round(e.nativeEvent.contentOffset.x / (CARD_WIDTH + 16));
+    const index = Math.round(e.nativeEvent.contentOffset.x / ITEM_STRIDE);
+    activeIndexRef.current = index;
     setActiveIndex(index);
   };
 
   return (
     <View>
       <FlatList
+        ref={flatListRef}
         data={BANNERS}
         keyExtractor={(item) => item.id}
         horizontal
         showsHorizontalScrollIndicator={false}
-        snapToInterval={CARD_WIDTH + 16}
+        snapToInterval={ITEM_STRIDE}
+        snapToAlignment="center"
         decelerationRate="fast"
         contentContainerStyle={styles.list}
         onScroll={handleScroll}
@@ -104,7 +122,7 @@ export function BannerCarousel() {
 }
 
 const styles = StyleSheet.create({
-  list: { paddingHorizontal: 20, gap: 16, paddingBottom: 4 },
+  list: { paddingHorizontal: SIDE_PADDING, gap: GAP, paddingBottom: 4 },
   card: {
     width: CARD_WIDTH,
     height: 160,

@@ -59,7 +59,7 @@ export function PreviousOrderCard({
         <View style={styles.footer}>
           <View>
             <Text style={[styles.orderId, { color: colors.textSecondary }]}>Order ID : {order.orderId}</Text>
-            <Text style={[styles.total, { color: colors.text }]}>Final Total : ₹ {order.total}</Text>
+            <Text style={[styles.total, { color: colors.text }]}>Final Total : $ {order.total}</Text>
           </View>
           <Pressable onPress={onOrderAgain} style={styles.orderBtn}>
             <Text style={styles.orderBtnText}>Order Again</Text>

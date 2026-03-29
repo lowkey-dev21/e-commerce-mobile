@@ -53,7 +53,7 @@ export function ArrivalCard({ product }: ArrivalCardProps) {
       <View style={styles.info}>
         <Text style={[styles.name, { color: colors.text }]} numberOfLines={2}>{product.name}</Text>
         <Text style={[styles.brand, { color: colors.textSecondary }]} numberOfLines={1}>{product.category}</Text>
-        <Text style={[styles.price, { color: colors.text }]}>₹{product.price.toLocaleString()}</Text>
+        <Text style={[styles.price, { color: colors.text }]}>${product.price.toLocaleString()}</Text>
       </View>
     </Pressable>
   );

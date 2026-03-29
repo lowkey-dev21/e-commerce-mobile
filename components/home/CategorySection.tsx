@@ -2,13 +2,13 @@ import { View, Text, ImageBackground, Pressable, StyleSheet } from 'react-native
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 
-const CARD_HEIGHT = 110;
+const CARD_HEIGHT = 150;
 
 interface Category {
   id: string;
   name: string;
   count: string;
-  image: string;
+  image: any;
   gradient: readonly [string, string];
 }
 
@@ -16,36 +16,36 @@ const CATEGORIES: Category[] = [
   {
     id: '1',
     name: 'New Arrivals',
-    count: '208 Products',
-    image: 'https://loremflickr.com/700/220/shopping,new,arrivals?lock=10',
+    count: '20 Products',
+    image: require('../../assets/fashion.jpeg'),
     gradient: ['rgba(74,183,182,0.88)', 'transparent'],
   },
   {
     id: '2',
     name: 'Furniture',
-    count: '358 Products',
-    image: 'https://loremflickr.com/700/220/furniture,sofa,living?lock=11',
+    count: '3 Products',
+    image: require('../../assets/furniture.jpeg'),
     gradient: ['rgba(108,92,231,0.88)', 'transparent'],
   },
   {
     id: '3',
     name: 'Appliances',
-    count: '160 Products',
-    image: 'https://loremflickr.com/700/220/appliance,kitchen,home?lock=12',
+    count: '1 Product',
+    image: require('../../assets/washing-machine.png'),
     gradient: ['rgba(253,121,168,0.88)', 'transparent'],
   },
   {
     id: '4',
     name: 'Electronics',
-    count: '230 Products',
-    image: 'https://loremflickr.com/700/220/electronics,technology,gadgets?lock=13',
+    count: '7 Products',
+    image: require('../../assets/iphone.png'),
     gradient: ['rgba(0,184,148,0.88)', 'transparent'],
   },
   {
     id: '5',
     name: 'Home & Living',
-    count: '140 Products',
-    image: 'https://loremflickr.com/700/220/home,decor,interior?lock=14',
+    count: '4 Products',
+    image: require('../../assets/zelot.png'),
     gradient: ['rgba(253,203,110,0.9)', 'transparent'],
   },
 ];
@@ -59,7 +59,7 @@ function CategoryCard({ item }: { item: Category }) {
       style={styles.shadow}
     >
       <ImageBackground
-        source={{ uri: item.image }}
+        source={item.image}
         style={styles.card}
         imageStyle={styles.cardImage}
         resizeMode="cover"

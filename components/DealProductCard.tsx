@@ -71,7 +71,7 @@ export function DealProductCard({ product, onPress, onWishlist, onAddToCart }: D
         <Text style={[styles.name, { color: colors.text }]} numberOfLines={2}>{product.name}</Text>
 
         <View style={styles.priceRow}>
-          <Text style={[styles.price, { color: colors.text }]}>₹ {product.price.toLocaleString()}</Text>
+          <Text style={[styles.price, { color: colors.text }]}>$ {product.price.toLocaleString()}</Text>
           {product.rating && (
             <View style={styles.ratingRow}>
               <Text style={styles.star}>★</Text>
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: 120,
+    height: 170,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 12,
   },

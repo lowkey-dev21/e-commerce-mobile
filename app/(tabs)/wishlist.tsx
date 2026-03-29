@@ -16,12 +16,26 @@ const { width } = Dimensions.get('window');
 const CARD_WIDTH = (width - 52) / 2;
 
 const LOCAL_IMAGES: Record<string, any> = {
-  '1': require('../../assets/chair.png'),
-  '2': require('../../assets/washing-machine.png'),
-  '3': require('../../assets/chair.png'),
-  '4': require('../../assets/washing-machine.png'),
-  '5': require('../../assets/chair.png'),
-  '6': require('../../assets/washing-machine.png'),
+  '1':  require('../../assets/bag.png'),
+  '2':  require('../../assets/bookself.png'),
+  '3':  require('../../assets/camera.png'),
+  '4':  require('../../assets/car-toy.png'),
+  '5':  require('../../assets/chair.png'),
+  '6':  require('../../assets/chair2.png'),
+  '7':  require('../../assets/chips.png'),
+  '8':  require('../../assets/coat.png'),
+  '9':  require('../../assets/cream.png'),
+  '10': require('../../assets/dryfood.png'),
+  '11': require('../../assets/jacket2.png'),
+  '12': require('../../assets/laptop.png'),
+  '13': require('../../assets/pad.png'),
+  '14': require('../../assets/pad2.png'),
+  '15': require('../../assets/pad3.png'),
+  '16': require('../../assets/rgb.png'),
+  '17': require('../../assets/soccer.png'),
+  '18': require('../../assets/strawberry.png'),
+  '19': require('../../assets/tv.png'),
+  '20': require('../../assets/washing-machine.png'),
 };
 
 const FILTERS = ['All', 'Latest', 'Most Popular', 'Cheapest'] as const;
@@ -59,7 +73,7 @@ function WishlistCard({ item }: { item: WishlistItem }) {
             <Text style={[styles.rating, { color: colors.textSecondary }]}>{item.rating}</Text>
           </View>
         )}
-        <Text style={[styles.price, { color: colors.text }]}>₹{item.price.toLocaleString()}</Text>
+        <Text style={[styles.price, { color: colors.text }]}>${item.price.toLocaleString()}</Text>
       </View>
 
       <Pressable onPress={() => remove(item.id)} style={[styles.heartBtn, { backgroundColor: colors.background }]}>

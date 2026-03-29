@@ -112,27 +112,50 @@ const reviewStyles = StyleSheet.create({
   },
 });
 
-const MOCK_DETAIL: Record<string, { name: string; price: number; category: string; rating: number; reviewCount: number; stock: number; image: string }> = {
-  '1':  { name: 'Luxury Wing Chair',    price: 3599,   category: 'Furniture',    rating: 4.8, reviewCount: 214, stock: 8,  image: 'https://cdn.dummyjson.com/products/images/furniture/Knoll%20Saarinen%20Executive%20Conference%20Chair/1.webp' },
-  '2':  { name: 'LG Washing Machine',   price: 45999,  category: 'Appliances',   rating: 4.6, reviewCount: 320, stock: 5,  image: 'https://loremflickr.com/600/600/washing,machine,appliance?lock=202' },
-  '3':  { name: 'Accent Armchair',      price: 2899,   category: 'Furniture',    rating: 4.5, reviewCount: 178, stock: 12, image: 'https://cdn.dummyjson.com/products/images/furniture/Annibale%20Colombo%20Sofa/1.webp' },
-  '4':  { name: 'Front Load Washer',    price: 38999,  category: 'Appliances',   rating: 4.7, reviewCount: 265, stock: 3,  image: 'https://loremflickr.com/600/600/laundry,front,loader?lock=204' },
-  '5':  { name: 'Classic Wingback',     price: 4299,   category: 'Furniture',    rating: 4.9, reviewCount: 302, stock: 6,  image: 'https://loremflickr.com/600/600/armchair,velvet,wingback?lock=205' },
-  '6':  { name: 'Samsung Washer 8kg',   price: 52000,  category: 'Appliances',   rating: 4.8, reviewCount: 189, stock: 4,  image: 'https://loremflickr.com/600/600/washing,machine?lock=206' },
-  '7':  { name: 'Sony 65" OLED TV',     price: 89999,  category: 'Electronics',  rating: 4.9, reviewCount: 412, stock: 7,  image: 'https://loremflickr.com/600/600/smart,tv,television?lock=207' },
-  '8':  { name: 'MacBook Pro M3',       price: 124999, category: 'Electronics',  rating: 4.8, reviewCount: 534, stock: 9,  image: 'https://cdn.dummyjson.com/products/images/laptops/Apple%20MacBook%20Pro%2014%20Inch%20Space%20Grey/1.webp' },
-  '9':  { name: 'Samsung Galaxy S25',   price: 74999,  category: 'Electronics',  rating: 4.7, reviewCount: 621, stock: 15, image: 'https://cdn.dummyjson.com/products/images/smartphones/Samsung%20Galaxy%20S23%20Ultra/1.webp' },
-  '10': { name: 'AirPods Pro 2',        price: 24999,  category: 'Electronics',  rating: 4.6, reviewCount: 847, stock: 20, image: 'https://loremflickr.com/600/600/airpods,earbuds,wireless?lock=210' },
-  '11': { name: 'Dyson V15 Vacuum',     price: 42999,  category: 'Appliances',   rating: 4.7, reviewCount: 293, stock: 6,  image: 'https://loremflickr.com/600/600/vacuum,dyson,cleaner?lock=211' },
-  '12': { name: 'Bosch Dishwasher',     price: 35999,  category: 'Appliances',   rating: 4.5, reviewCount: 157, stock: 4,  image: 'https://loremflickr.com/600/600/dishwasher,bosch?lock=212' },
-  '13': { name: 'L-Shape Sofa Set',     price: 28999,  category: 'Furniture',    rating: 4.8, reviewCount: 388, stock: 3,  image: 'https://cdn.dummyjson.com/products/images/furniture/Annibale%20Colombo%20Sofa/2.webp' },
-  '14': { name: 'King Size Bed Frame',  price: 18999,  category: 'Furniture',    rating: 4.6, reviewCount: 241, stock: 5,  image: 'https://cdn.dummyjson.com/products/images/furniture/Annibale%20Colombo%20Bed/1.webp' },
-  '15': { name: 'Coffee Table Oak',     price: 6499,   category: 'Furniture',    rating: 4.4, reviewCount: 132, stock: 11, image: 'https://cdn.dummyjson.com/products/images/furniture/Bedside%20Table%20African%20Cherry/1.webp' },
-  '16': { name: 'Floor Standing Lamp',  price: 3299,   category: 'Home & Living',rating: 4.5, reviewCount: 98,  stock: 14, image: 'https://loremflickr.com/600/600/floor,lamp,light?lock=216' },
-  '17': { name: 'Scented Candle Set',   price: 1299,   category: 'Home & Living',rating: 4.3, reviewCount: 74,  stock: 30, image: 'https://loremflickr.com/600/600/candle,scented,wax?lock=217' },
-  '18': { name: 'Ceramic Vase Set',     price: 2199,   category: 'Home & Living',rating: 4.4, reviewCount: 116, stock: 18, image: 'https://loremflickr.com/600/600/vase,ceramic,flower?lock=218' },
-  '19': { name: 'Wall Mirror Arch',     price: 5499,   category: 'Home & Living',rating: 4.7, reviewCount: 203, stock: 7,  image: 'https://loremflickr.com/600/600/mirror,wall,arch?lock=219' },
-  '20': { name: 'Kitchen Knife Set',    price: 4299,   category: 'Home & Living',rating: 4.6, reviewCount: 345, stock: 9,  image: 'https://loremflickr.com/600/600/knife,kitchen,chef?lock=220' },
+const MOCK_IMAGES: Record<string, any> = {
+  '1':  require('../../assets/bag.png'),
+  '2':  require('../../assets/bookself.png'),
+  '3':  require('../../assets/camera.png'),
+  '4':  require('../../assets/car-toy.png'),
+  '5':  require('../../assets/chair.png'),
+  '6':  require('../../assets/chair2.png'),
+  '7':  require('../../assets/chips.png'),
+  '8':  require('../../assets/coat.png'),
+  '9':  require('../../assets/cream.png'),
+  '10': require('../../assets/dryfood.png'),
+  '11': require('../../assets/jacket2.png'),
+  '12': require('../../assets/laptop.png'),
+  '13': require('../../assets/pad.png'),
+  '14': require('../../assets/pad2.png'),
+  '15': require('../../assets/pad3.png'),
+  '16': require('../../assets/rgb.png'),
+  '17': require('../../assets/soccer.png'),
+  '18': require('../../assets/strawberry.png'),
+  '19': require('../../assets/tv.png'),
+  '20': require('../../assets/washing-machine.png'),
+};
+
+const MOCK_DETAIL: Record<string, { name: string; price: number; category: string; rating: number; reviewCount: number; stock: number }> = {
+  '1':  { name: 'Gucci Travel Bag',          price: 85000, category: 'Fashion',      rating: 4.9, reviewCount: 312, stock: 8  },
+  '2':  { name: 'Wooden Side Table',          price: 8500,  category: 'Furniture',    rating: 4.5, reviewCount: 145, stock: 12 },
+  '3':  { name: 'Canon EOS 250D',             price: 45000, category: 'Electronics',  rating: 4.8, reviewCount: 289, stock: 7  },
+  '4':  { name: 'Kids Electric Car',          price: 12500, category: 'Toys',         rating: 4.6, reviewCount: 198, stock: 5  },
+  '5':  { name: 'Luxury Wing Chair',          price: 15999, category: 'Furniture',    rating: 4.8, reviewCount: 214, stock: 6  },
+  '6':  { name: 'Modern Dining Chair',        price: 4999,  category: 'Furniture',    rating: 4.4, reviewCount: 132, stock: 15 },
+  '7':  { name: 'Potato Chips Snack',         price: 299,   category: 'Food',         rating: 4.2, reviewCount: 87,  stock: 50 },
+  '8':  { name: 'Hooded Rain Coat',           price: 3999,  category: 'Fashion',      rating: 4.5, reviewCount: 176, stock: 10 },
+  '9':  { name: 'Curology Skincare Set',      price: 2500,  category: 'Home & Living',rating: 4.7, reviewCount: 243, stock: 18 },
+  '10': { name: 'Cesar Dog Dry Food',         price: 1800,  category: 'Home & Living',rating: 4.3, reviewCount: 94,  stock: 30 },
+  '11': { name: 'Bomber Jacket',              price: 4500,  category: 'Fashion',      rating: 4.6, reviewCount: 211, stock: 9  },
+  '12': { name: 'Lenovo Gaming Laptop',       price: 85000, category: 'Electronics',  rating: 4.8, reviewCount: 534, stock: 4  },
+  '13': { name: 'Wired Gaming Controller',    price: 1500,  category: 'Electronics',  rating: 4.3, reviewCount: 167, stock: 22 },
+  '14': { name: 'Fantech Wireless Gamepad',   price: 2800,  category: 'Electronics',  rating: 4.5, reviewCount: 203, stock: 14 },
+  '15': { name: 'PS5 DualSense Controller',   price: 5500,  category: 'Electronics',  rating: 4.9, reviewCount: 621, stock: 11 },
+  '16': { name: 'RGB CPU Liquid Cooler',      price: 9500,  category: 'Electronics',  rating: 4.7, reviewCount: 178, stock: 6  },
+  '17': { name: 'Adidas Copa Cleats',         price: 8500,  category: 'Sports',       rating: 4.8, reviewCount: 349, stock: 8  },
+  '18': { name: 'Fresh Strawberries 500g',    price: 350,   category: 'Food',         rating: 4.5, reviewCount: 56,  stock: 40 },
+  '19': { name: 'MSI 27" Curved Monitor',     price: 35000, category: 'Electronics',  rating: 4.7, reviewCount: 412, stock: 5  },
+  '20': { name: 'Front Load Washer 8kg',      price: 48000, category: 'Appliances',   rating: 4.6, reviewCount: 265, stock: 3  },
 };
 
 const DESC = 'Premium quality product designed for comfort and durability. This item combines modern aesthetics with practical functionality, making it a perfect addition to your home. Built with high-grade materials to ensure long-lasting performance.';
@@ -140,7 +163,7 @@ const DESC = 'Premium quality product designed for comfort and durability. This 
 function getMockProduct(id: string): Product {
   const m = MOCK_DETAIL[id];
   if (m) {
-    return { _id: id, name: m.name, description: DESC, price: m.price, category: m.category, image: m.image, stock: m.stock, rating: m.rating, reviewCount: m.reviewCount, createdAt: new Date().toISOString() };
+    return { _id: id, name: m.name, description: DESC, price: m.price, category: m.category, image: '', stock: m.stock, rating: m.rating, reviewCount: m.reviewCount, createdAt: new Date().toISOString() };
   }
   return { _id: id, name: 'Product', description: DESC, price: 0, category: '', image: '', stock: 0, rating: 0, reviewCount: 0, createdAt: new Date().toISOString() };
 }
@@ -191,12 +214,7 @@ export default function ProductDetailScreen() {
 
   if (!product) return null;
 
-  const mockImageUri = MOCK_DETAIL[id!]?.image;
-  const imageSource = mockImageUri
-    ? { uri: mockImageUri }
-    : product.image
-    ? { uri: product.image }
-    : null;
+  const imageSource = MOCK_IMAGES[id!] ?? (product.image ? { uri: product.image } : null);
 
   const shortDesc = product.description.length > 140
     ? product.description.slice(0, 140) + '...'
@@ -330,7 +348,7 @@ export default function ProductDetailScreen() {
         <View>
           <Text style={[styles.priceLabel, { color: colors.textSecondary }]}>Total Price</Text>
           <Text style={[styles.price, { color: colors.text }]}>
-            ₹{(product.price * quantity).toLocaleString()}
+            ${(product.price * quantity).toLocaleString()}
           </Text>
         </View>
         <Pressable

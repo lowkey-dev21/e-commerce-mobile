@@ -1,9 +1,13 @@
 import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import * as SplashScreen from 'expo-splash-screen';
 import { useThemeStore } from '../store/themeStore';
 import { useTheme } from '../hooks/useTheme';
 import { useFonts } from 'expo-font';
+
+// Keep the native splash visible while fonts load
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const { loadTheme, isDark } = useThemeStore();
@@ -19,6 +23,13 @@ export default function RootLayout() {
     loadTheme();
   }, []);
 
+  useEffect(() => {
+    if (fontsLoaded) {
+      // Hide native splash — custom animated splash (app/index.tsx) takes over
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
   if (!fontsLoaded) return null;
 
   return (
@@ -32,7 +43,8 @@ export default function RootLayout() {
           contentStyle: { backgroundColor: colors.background },
         }}
       >
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="index" options={{ headerShown: false, animation: 'fade' }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: 'fade' }} />
         <Stack.Screen
           name="product/[id]"
           options={{ headerShown: false }}

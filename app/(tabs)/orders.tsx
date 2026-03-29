@@ -23,43 +23,43 @@ interface MockOrder {
 
 const ACTIVE_ORDERS: MockOrder[] = [
   {
-    id: '1',
+    id: '5',
     name: 'Luxury Wing Chair',
     category: 'Furniture',
     qty: 1,
-    price: 3599,
+    price: 15999,
     status: 'On Progress',
     image: require('../../assets/chair.png'),
   },
   {
-    id: '2',
-    name: 'LG Washing Machine 8kg',
-    category: 'Appliances',
-    qty: 2,
-    price: 91998,
+    id: '12',
+    name: 'Lenovo Gaming Laptop',
+    category: 'Electronics',
+    qty: 1,
+    price: 85000,
     status: 'On Progress',
-    image: require('../../assets/washing-machine.png'),
+    image: require('../../assets/laptop.png'),
   },
 ];
 
 const HISTORY_ORDERS: MockOrder[] = [
   {
-    id: '3',
-    name: 'Accent Armchair',
-    category: 'Furniture',
-    qty: 1,
-    price: 2899,
+    id: '15',
+    name: 'PS5 DualSense Controller',
+    category: 'Electronics',
+    qty: 2,
+    price: 11000,
     status: 'Completed',
-    image: require('../../assets/chair.png'),
+    image: require('../../assets/pad3.png'),
   },
   {
-    id: '4',
-    name: 'Samsung Washer 8kg',
-    category: 'Appliances',
+    id: '3',
+    name: 'Canon EOS 250D',
+    category: 'Electronics',
     qty: 1,
-    price: 52000,
+    price: 45000,
     status: 'Completed',
-    image: require('../../assets/washing-machine.png'),
+    image: require('../../assets/camera.png'),
   },
 ];
 
@@ -94,7 +94,7 @@ function OrderCard({ order, onTrack }: { order: MockOrder; onTrack: () => void }
             Qty: {order.qty}
           </Text>
           <Text style={[styles.price, { color: colors.text }]}>
-            ₹{order.price.toLocaleString()}
+            ${order.price.toLocaleString()}
           </Text>
         </View>
       </View>
