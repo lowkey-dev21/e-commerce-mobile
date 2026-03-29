@@ -1,20 +1,11 @@
-import { useState } from 'react';
-import { View, TextInput, StyleSheet, RefObject, Pressable, Text } from 'react-native';
-import Svg, { Path, Circle } from 'react-native-svg';
+import { useState, RefObject } from 'react';
+import { View, TextInput, StyleSheet, Pressable, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MicIcon } from './icons/MicIcon';
+import { SearchIcon } from './icons/SearchIcon';
 import { useTheme } from '../hooks/useTheme';
 
 const TEAL = '#4AB7B6';
-
-function SearchIcon() {
-  return (
-    <Svg width={18} height={18} viewBox="0 0 24 24" fill="none">
-      <Circle cx={11} cy={11} r={8} stroke="#AFAFAF" strokeWidth={2} />
-      <Path d="M21 21L16.65 16.65" stroke="#AFAFAF" strokeWidth={2} strokeLinecap="round" />
-    </Svg>
-  );
-}
 
 interface AppHeaderProps {
   placeholder?: string;
@@ -23,7 +14,7 @@ interface AppHeaderProps {
   onFocus?: () => void;
   onClose?: () => void;
   showClose?: boolean;
-  inputRef?: RefObject<TextInput>;
+  inputRef?: RefObject<TextInput | null>;
   /** true = teal background (search tab). false = plain white bar (home screen) */
   withBackground?: boolean;
 }
@@ -46,7 +37,7 @@ export function AppHeader({
     return (
       <View style={[styles.plainWrapper, { backgroundColor: colors.background, paddingTop: showClose ? insets.top + 10 : 8 }]}>
         <View style={[styles.searchBar, { borderWidth: focused ? 1.8 : 1, borderColor: focused ? TEAL : colors.border }]}>
-          <SearchIcon />
+          <SearchIcon color="#AFAFAF" size={18} />
           <TextInput
             ref={inputRef}
             style={[styles.input, { color: colors.text }]}
@@ -74,7 +65,7 @@ export function AppHeader({
   return (
     <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
       <View style={styles.searchBar}>
-        <SearchIcon />
+        <SearchIcon color="#AFAFAF" size={18} />
         <TextInput
           ref={inputRef}
           style={styles.input}

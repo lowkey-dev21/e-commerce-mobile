@@ -5,16 +5,19 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Svg, { Path, Line, Circle } from 'react-native-svg';
+import Svg, { Path } from 'react-native-svg';
 import { useCartStore } from '../../store/cartStore';
 import { useWishlistStore } from '../../store/wishlistStore';
 import { useTheme } from '../../hooks/useTheme';
 import { useThemeStore } from '../../store/themeStore';
 import { productService, Product } from '../../services/api';
+import { BackIcon } from '../../components/icons/BackIcon';
+import { HeartIcon } from '../../components/icons/HeartIcon';
+import { ShoppingBagIcon } from '../../components/icons/ShoppingBagIcon';
+import { StarIcon } from '../../components/icons/StarIcon';
 
 const { width, height } = Dimensions.get('window');
 const TEAL = '#4AB7B6';
-const ORANGE = TEAL;
 const IMAGE_HEIGHT = height * 0.48;
 
 // Map of product IDs to their available colors (add entries when a product has color variants)
@@ -109,46 +112,6 @@ const reviewStyles = StyleSheet.create({
   },
 });
 
-function HeartIcon({ filled, color }: { filled: boolean; color: string }) {
-  return (
-    <Svg width={20} height={20} viewBox="0 0 24 24" fill={filled ? color : 'none'}>
-      <Path
-        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-        stroke={color}
-        strokeWidth={1.8}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </Svg>
-  );
-}
-
-function BackIcon({ color }: { color: string }) {
-  return (
-    <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
-      <Path d="M15 18L9 12L15 6" stroke={color} strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" />
-    </Svg>
-  );
-}
-
-function BagIcon({ color }: { color: string }) {
-  return (
-    <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
-      <Path d="M6 2L3 6V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V6L18 2H6Z" stroke={color} strokeWidth={1.8} strokeLinejoin="round" />
-      <Path d="M3 6H21" stroke={color} strokeWidth={1.8} strokeLinecap="round" />
-      <Path d="M16 10C16 12.2091 14.2091 14 12 14C9.79086 14 8 12.2091 8 10" stroke={color} strokeWidth={1.8} strokeLinecap="round" />
-    </Svg>
-  );
-}
-
-function StarIcon() {
-  return (
-    <Svg width={14} height={14} viewBox="0 0 24 24" fill="#FBBF24">
-      <Path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-    </Svg>
-  );
-}
-
 // Mock product for local IDs (no API)
 function getMockProduct(id: string): Product {
   const isWasher = id === '2' || id === '4' || id === '6';
@@ -239,7 +202,7 @@ export default function ProductDetailScreen() {
           onPress={() => product && toggleWishlist({ id: product._id, name: product.name, price: product.price, rating: product.rating, image: { uri: product.image } })}
           style={[styles.headerBtn, { backgroundColor: colors.card }]}
         >
-          <HeartIcon filled={wishlisted} color={ORANGE} />
+          <HeartIcon filled={wishlisted} color={TEAL} size={20} />
         </Pressable>
       </View>
 
@@ -279,7 +242,7 @@ export default function ProductDetailScreen() {
 
           {/* Rating + stock */}
           <View style={styles.ratingRow}>
-            <StarIcon />
+            <StarIcon size={14} />
             <Text style={[styles.rating, { color: colors.text }]}>{product.rating.toFixed(1)}</Text>
             <Text style={[styles.reviews, { color: colors.textSecondary }]}>
               ({product.reviewCount} Review)
@@ -363,7 +326,7 @@ export default function ProductDetailScreen() {
           disabled={product.stock === 0}
           style={[styles.addBtn, { backgroundColor: product.stock === 0 ? colors.border : TEAL }]}
         >
-          <BagIcon color="#fff" />
+          <ShoppingBagIcon color="#fff" size={22} />
           <Text style={styles.addBtnText}>
             {cartItem ? 'Update Cart' : 'Add to Cart'}
           </Text>

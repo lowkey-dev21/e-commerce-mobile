@@ -12,53 +12,13 @@ import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path, Circle, Rect } from 'react-native-svg';
 import { useTheme } from '../hooks/useTheme';
+import { BackIcon } from '../components/icons/BackIcon';
+import { CameraIcon } from '../components/icons/CameraIcon';
+import { PersonIcon } from '../components/icons/PersonIcon';
+import { MailIcon } from '../components/icons/MailIcon';
+import { DotsVerticalIcon } from '../components/icons/DotsVerticalIcon';
 
 const TEAL = '#4AB7B6';
-
-function BackIcon({ color }: { color: string }) {
-  return (
-    <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
-      <Path d="M15 18L9 12L15 6" stroke={color} strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" />
-    </Svg>
-  );
-}
-
-function DotsIcon({ color }: { color: string }) {
-  return (
-    <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
-      <Circle cx={12} cy={5} r={1.2} fill={color} />
-      <Circle cx={12} cy={12} r={1.2} fill={color} />
-      <Circle cx={12} cy={19} r={1.2} fill={color} />
-    </Svg>
-  );
-}
-
-function CameraIcon({ color }: { color: string }) {
-  return (
-    <Svg width={16} height={16} viewBox="0 0 24 24" fill="none">
-      <Path d="M23 19C23 19.5304 22.7893 20.0391 22.4142 20.4142C22.0391 20.7893 21.5304 21 21 21H3C2.46957 21 1.96086 20.7893 1.58579 20.4142C1.21071 20.0391 1 19.5304 1 19V8C1 7.46957 1.21071 6.96086 1.58579 6.58579C1.96086 6.21071 2.46957 6 3 6H7L9 3H15L17 6H21C21.5304 6 22.0391 6.21071 22.4142 6.58579C22.7893 6.96086 23 7.46957 23 8V19Z" stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
-      <Circle cx={12} cy={13} r={4} stroke={color} strokeWidth={1.8} />
-    </Svg>
-  );
-}
-
-function PersonIcon({ color }: { color: string }) {
-  return (
-    <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">
-      <Circle cx={12} cy={8} r={4} stroke={color} strokeWidth={1.8} />
-      <Path d="M4 20C4 17.3333 6.66667 15 12 15C17.3333 15 20 17.3333 20 20" stroke={color} strokeWidth={1.8} strokeLinecap="round" />
-    </Svg>
-  );
-}
-
-function MailIcon({ color }: { color: string }) {
-  return (
-    <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">
-      <Rect x={2} y={4} width={20} height={16} rx={2} stroke={color} strokeWidth={1.8} />
-      <Path d="M2 7L12 13L22 7" stroke={color} strokeWidth={1.8} strokeLinecap="round" />
-    </Svg>
-  );
-}
 
 function LinkIcon({ color }: { color: string }) {
   return (
@@ -97,7 +57,7 @@ export default function EditProfileScreen() {
         </Pressable>
         <Text style={[styles.title, { color: colors.text }]}>Edit Profile</Text>
         <Pressable style={styles.dotsBtn}>
-          <DotsIcon color={colors.text} />
+          <DotsVerticalIcon color={colors.text} />
         </Pressable>
       </View>
 

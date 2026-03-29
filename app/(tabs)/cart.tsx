@@ -4,9 +4,10 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Svg, { Path, Circle } from 'react-native-svg';
+import Svg, { Path } from 'react-native-svg';
 import { useCartStore } from '../../store/cartStore';
 import { useTheme } from '../../hooks/useTheme';
+import { TrashIcon } from '../../components/icons/TrashIcon';
 
 const TEAL = '#4AB7B6';
 
@@ -18,15 +19,6 @@ const LOCAL_IMAGES: Record<string, any> = {
   '5': require('../../assets/chair.png'),
   '6': require('../../assets/washing-machine.png'),
 };
-
-function TrashIcon({ color }: { color: string }) {
-  return (
-    <Svg width={18} height={18} viewBox="0 0 24 24" fill="none">
-      <Path d="M3 6H5H21" stroke={color} strokeWidth={1.8} strokeLinecap="round" />
-      <Path d="M8 6V4C8 3.44772 8.44772 3 9 3H15C15.5523 3 16 3.44772 16 4V6M19 6L18.1245 19.1319C18.0535 20.1893 17.1742 21 16.1143 21H7.88571C6.82581 21 5.94648 20.1893 5.87549 19.1319L5 6H19Z" stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
-    </Svg>
-  );
-}
 
 export default function CartScreen() {
   const colors = useTheme();
@@ -119,7 +111,7 @@ export default function CartScreen() {
                 </View>
 
                 <Pressable onPress={() => removeItem(item.product._id)} style={styles.removeBtn}>
-                  <TrashIcon color={colors.textSecondary} />
+                  <TrashIcon color={colors.textSecondary} size={18} />
                 </Pressable>
               </View>
             )}

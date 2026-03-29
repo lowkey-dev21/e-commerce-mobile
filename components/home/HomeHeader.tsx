@@ -1,25 +1,11 @@
 import { View, Text, Pressable, StyleSheet, Image } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import Svg, { Path, Line } from 'react-native-svg';
 import { BellIcon } from '../icons/BellIcon';
+import { SearchIcon } from '../icons/SearchIcon';
 import { useTheme } from '../../hooks/useTheme';
 
-const ORANGE = '#4AB7B6';
 const TEAL = '#4AB7B6';
-
-function SearchIcon({ color }: { color: string }) {
-  return (
-    <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
-      <Path
-        d="M21 21L16.65 16.65M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z"
-        stroke={color}
-        strokeWidth={2}
-        strokeLinecap="round"
-      />
-    </Svg>
-  );
-}
 
 interface HomeHeaderProps {
   name?: string;
@@ -58,7 +44,7 @@ export function HomeHeader({
       {/* Right: search, theme toggle, bell */}
       <View style={styles.right}>
         <Pressable onPress={onSearchPress} style={styles.iconBtn}>
-          <SearchIcon color={colors.text} />
+          <SearchIcon color={colors.text} size={22} />
         </Pressable>
         <Pressable onPress={() => router.push('/notifications')} style={styles.iconBtn}>
           <BellIcon size={22} color={colors.text} />

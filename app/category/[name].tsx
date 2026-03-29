@@ -6,6 +6,7 @@ import Svg, { Path } from 'react-native-svg';
 import { productService, Product } from '../../services/api';
 import { DealProductCard, DealProduct } from '../../components/DealProductCard';
 import { useTheme } from '../../hooks/useTheme';
+import { BackIcon } from '../../components/icons/BackIcon';
 
 const TEAL = '#4AB7B6';
 
@@ -43,13 +44,6 @@ const MOCK_BY_CATEGORY: Record<string, DealProduct[]> = {
   ],
 };
 
-function BackIcon({ color }: { color: string }) {
-  return (
-    <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
-      <Path d="M15 18L9 12L15 6" stroke={color} strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" />
-    </Svg>
-  );
-}
 
 export default function CategoryScreen() {
   const { name } = useLocalSearchParams<{ name: string }>();

@@ -4,58 +4,16 @@ import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path, Circle, Rect } from 'react-native-svg';
 import { useTheme } from '../hooks/useTheme';
+import { BackIcon } from '../components/icons/BackIcon';
+import { CardIcon } from '../components/icons/CardIcon';
+import { PersonIcon } from '../components/icons/PersonIcon';
+import { CalendarIcon } from '../components/icons/CalendarIcon';
+import { LockIcon } from '../components/icons/LockIcon';
 
 const TEAL = '#4AB7B6';
 
-function BackIcon({ color }: { color: string }) {
-  return (
-    <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
-      <Path d="M15 18L9 12L15 6" stroke={color} strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" />
-    </Svg>
-  );
-}
 
-function CardIcon({ color }: { color: string }) {
-  return (
-    <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">
-      <Rect x={2} y={5} width={20} height={14} rx={2} stroke={color} strokeWidth={1.8} />
-      <Path d="M2 10H22" stroke={color} strokeWidth={1.8} strokeLinecap="round" />
-      <Path d="M6 15H10" stroke={color} strokeWidth={1.8} strokeLinecap="round" />
-    </Svg>
-  );
-}
 
-function PersonIcon({ color }: { color: string }) {
-  return (
-    <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">
-      <Circle cx={12} cy={8} r={4} stroke={color} strokeWidth={1.8} />
-      <Path d="M4 20C4 17.3333 6.66667 15 12 15C17.3333 15 20 17.3333 20 20" stroke={color} strokeWidth={1.8} strokeLinecap="round" />
-    </Svg>
-  );
-}
-
-function CalendarIcon({ color }: { color: string }) {
-  return (
-    <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">
-      <Rect x={3} y={4} width={18} height={17} rx={2} stroke={color} strokeWidth={1.8} />
-      <Path d="M3 9H21" stroke={color} strokeWidth={1.8} strokeLinecap="round" />
-      <Path d="M8 2V6M16 2V6" stroke={color} strokeWidth={1.8} strokeLinecap="round" />
-      <Circle cx={8} cy={14} r={1} fill={color} />
-      <Circle cx={12} cy={14} r={1} fill={color} />
-      <Circle cx={16} cy={14} r={1} fill={color} />
-    </Svg>
-  );
-}
-
-function LockIcon({ color }: { color: string }) {
-  return (
-    <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">
-      <Path d="M8 11V7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7V11" stroke={color} strokeWidth={1.8} strokeLinecap="round" />
-      <Rect x={4} y={11} width={16} height={11} rx={2} stroke={color} strokeWidth={1.8} />
-      <Circle cx={12} cy={16} r={1.5} fill={color} />
-    </Svg>
-  );
-}
 
 function CardField({
   label,

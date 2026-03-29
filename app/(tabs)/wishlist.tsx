@@ -9,6 +9,7 @@ import Svg, { Path, Circle } from 'react-native-svg';
 import { useWishlistStore, WishlistItem } from '../../store/wishlistStore';
 import { useTheme } from '../../hooks/useTheme';
 import { SearchInput } from '../../components/SearchInput';
+import { HeartIcon } from '../../components/icons/HeartIcon';
 
 const TEAL = '#4AB7B6';
 const { width } = Dimensions.get('window');
@@ -25,14 +26,6 @@ const LOCAL_IMAGES: Record<string, any> = {
 
 const FILTERS = ['All', 'Latest', 'Most Popular', 'Cheapest'] as const;
 type Filter = typeof FILTERS[number];
-
-function HeartFilledIcon() {
-  return (
-    <Svg width={16} height={16} viewBox="0 0 24 24" fill={TEAL}>
-      <Path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke={TEAL} strokeWidth={1.5} />
-    </Svg>
-  );
-}
 
 function WishlistCard({ item }: { item: WishlistItem }) {
   const router = useRouter();
@@ -70,7 +63,7 @@ function WishlistCard({ item }: { item: WishlistItem }) {
       </View>
 
       <Pressable onPress={() => remove(item.id)} style={[styles.heartBtn, { backgroundColor: colors.background }]}>
-        <HeartFilledIcon />
+        <HeartIcon color={TEAL} size={16} filled />
       </Pressable>
     </Pressable>
   );

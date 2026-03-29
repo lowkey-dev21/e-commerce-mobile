@@ -4,27 +4,13 @@ import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path, Circle } from 'react-native-svg';
 import { useTheme } from '../hooks/useTheme';
+import { BackIcon } from '../components/icons/BackIcon';
+import { DotsVerticalIcon } from '../components/icons/DotsVerticalIcon';
 
 const LOREM =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eget ornare quam vel facilisis feugiat amet sagittis arcu, tortor. Sapien, consequat ultrices morbi orci semper sit nulla. Leo auctor ut etiam est, amet aliquet ut vivamus. Odio vulputate est id tincidunt fames.';
 
-function BackIcon({ color }: { color: string }) {
-  return (
-    <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
-      <Path d="M15 18L9 12L15 6" stroke={color} strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" />
-    </Svg>
-  );
-}
 
-function DotsIcon({ color }: { color: string }) {
-  return (
-    <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
-      <Circle cx={12} cy={5} r={1.2} fill={color} />
-      <Circle cx={12} cy={12} r={1.2} fill={color} />
-      <Circle cx={12} cy={19} r={1.2} fill={color} />
-    </Svg>
-  );
-}
 
 export default function LegalScreen() {
   const colors = useTheme();
@@ -40,7 +26,7 @@ export default function LegalScreen() {
         </Pressable>
         <Text style={[styles.title, { color: colors.text }]}>Legal and Policies</Text>
         <Pressable style={styles.dotsBtn}>
-          <DotsIcon color={colors.text} />
+          <DotsVerticalIcon color={colors.text} />
         </Pressable>
       </View>
 

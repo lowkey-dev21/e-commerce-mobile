@@ -21,7 +21,10 @@
       "Read(//Users/apple/Downloads/**)",
       "Bash(cp \"/Users/apple/Downloads/Group 9.png\" /Users/apple/Desktop/DEV/RN_DEV/ecommerce/mobile/assets/banner.png)",
       "Bash(cp \"/Users/apple/Downloads/chair.png\" /Users/apple/Desktop/DEV/RN_DEV/ecommerce/mobile/assets/chair.png)",
-      "Bash(cp \"/Users/apple/Downloads/washing-machine.png\" /Users/apple/Desktop/DEV/RN_DEV/ecommerce/mobile/assets/washing-machine.png)"
+      "Bash(cp \"/Users/apple/Downloads/washing-machine.png\" /Users/apple/Desktop/DEV/RN_DEV/ecommerce/mobile/assets/washing-machine.png)",
+      "Bash(grep:*)",
+      "Bash(for f:*)",
+      "Bash(do echo:*)"
     ]
   }
 }

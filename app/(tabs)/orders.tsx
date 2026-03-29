@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import {
-  View, Text, StyleSheet, Pressable, Image, FlatList, ScrollView,
+  View, Text, StyleSheet, Pressable, Image, FlatList,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '../../hooks/useTheme';
+import { ScreenHeader } from '../../components/ScreenHeader';
+import { TabBar } from '../../components/TabBar';
 
 const TEAL = '#4AB7B6';
 const TABS = ['My Order', 'History'] as const;
@@ -119,7 +120,6 @@ function OrderCard({ order, onTrack }: { order: MockOrder; onTrack: () => void }
 
 export default function OrdersScreen() {
   const colors = useTheme();
-  const insets = useSafeAreaInsets();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>('My Order');
 
@@ -127,25 +127,8 @@ export default function OrdersScreen() {
 
   return (
     <View style={[styles.screen, { backgroundColor: colors.background }]}>
-      {/* Header */}
-      <View style={[styles.header, { paddingTop: insets.top + 10, backgroundColor: colors.card }]}>
-        <Text style={[styles.title, { color: colors.text }]}>My Orders</Text>
-      </View>
-
-      {/* Tabs */}
-      <View style={[styles.tabBar, { backgroundColor: colors.card, borderBottomColor: colors.border }]}>
-        {TABS.map((tab) => {
-          const active = activeTab === tab;
-          return (
-            <Pressable key={tab} onPress={() => setActiveTab(tab)} style={styles.tabItem}>
-              <Text style={[styles.tabLabel, { color: active ? TEAL : colors.textSecondary }]}>
-                {tab}
-              </Text>
-              {active && <View style={styles.tabUnderline} />}
-            </Pressable>
-          );
-        })}
-      </View>
+      <ScreenHeader title="My Orders" large />
+      <TabBar tabs={TABS} active={activeTab} onTabChange={(t) => setActiveTab(t as Tab)} />
 
       {/* Orders list */}
       <FlatList
@@ -166,32 +149,6 @@ export default function OrdersScreen() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1 },
-  header: {
-    paddingHorizontal: 20,
-    paddingBottom: 14,
-  },
-  title: { fontSize: 22, fontFamily: 'DMSans_700Bold' },
-  tabBar: {
-    flexDirection: 'row',
-    paddingHorizontal: 20,
-    borderBottomWidth: 1,
-  },
-  tabItem: {
-    marginRight: 28,
-    paddingBottom: 12,
-    paddingTop: 10,
-    alignItems: 'center',
-  },
-  tabLabel: { fontSize: 15, fontFamily: 'DMSans_500Medium' },
-  tabUnderline: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 2.5,
-    borderRadius: 2,
-    backgroundColor: TEAL,
-  },
   list: { padding: 16, gap: 14 },
   card: {
     borderRadius: 12,

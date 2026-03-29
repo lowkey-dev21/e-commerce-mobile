@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, Pressable, ScrollView,
-  Image, Modal, Alert,
+  Image, Modal,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Svg, { Path, Circle, Rect, G } from 'react-native-svg';
+import Svg, { Path, Rect, Circle } from 'react-native-svg';
 import { useCartStore } from '../store/cartStore';
 import { useTheme } from '../hooks/useTheme';
+import { ScreenHeader } from '../components/ScreenHeader';
+import { BackIcon } from '../components/icons/BackIcon';
+import { ChevronRightIcon } from '../components/icons/ChevronRightIcon';
+import { MapPinIcon } from '../components/icons/MapPinIcon';
+import { PlusCircleIcon } from '../components/icons/PlusCircleIcon';
+import { CheckIcon } from '../components/icons/CheckIcon';
 
 const TEAL = '#4AB7B6';
 
@@ -19,49 +25,6 @@ const LOCAL_IMAGES: Record<string, any> = {
   '5': require('../assets/chair.png'),
   '6': require('../assets/washing-machine.png'),
 };
-
-/* ── Icons ── */
-function BackIcon({ color }: { color: string }) {
-  return (
-    <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
-      <Path d="M15 18L9 12L15 6" stroke={color} strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" />
-    </Svg>
-  );
-}
-
-function PinIcon({ color }: { color: string }) {
-  return (
-    <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">
-      <Path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2Z" stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
-      <Circle cx={12} cy={9} r={2.5} stroke={color} strokeWidth={1.8} />
-    </Svg>
-  );
-}
-
-function ChevronIcon({ color }: { color: string }) {
-  return (
-    <Svg width={18} height={18} viewBox="0 0 24 24" fill="none">
-      <Path d="M9 18L15 12L9 6" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
-    </Svg>
-  );
-}
-
-function PlusIcon({ color }: { color: string }) {
-  return (
-    <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">
-      <Circle cx={12} cy={12} r={9} stroke={color} strokeWidth={1.8} />
-      <Path d="M12 8V16M8 12H16" stroke={color} strokeWidth={1.8} strokeLinecap="round" />
-    </Svg>
-  );
-}
-
-function CheckIcon({ color }: { color: string }) {
-  return (
-    <Svg width={12} height={12} viewBox="0 0 24 24" fill="none">
-      <Path d="M20 6L9 17L4 12" stroke={color} strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" />
-    </Svg>
-  );
-}
 
 function MapThumbnail() {
   return (
@@ -75,7 +38,7 @@ function MapThumbnail() {
         <Path d="M50 0 L50 60" stroke="#B2DFDB" strokeWidth={1} />
       </Svg>
       <View style={styles.mapPin}>
-        <PinIcon color="#EF4444" />
+        <MapPinIcon color="#EF4444" size={20} />
       </View>
     </View>
   );
@@ -168,13 +131,7 @@ export default function CheckoutScreen() {
   return (
     <View style={[styles.screen, { backgroundColor: colors.background }]}>
       {/* Header */}
-      <View style={[styles.header, { paddingTop: insets.top + 10, backgroundColor: colors.card }]}>
-        <Pressable onPress={() => router.back()} style={[styles.backBtn, { backgroundColor: colors.background }]}>
-          <BackIcon color={colors.text} />
-        </Pressable>
-        <Text style={[styles.title, { color: colors.text }]}>Payment</Text>
-        <View style={{ width: 40 }} />
-      </View>
+      <ScreenHeader title="Payment" onBack={() => router.back()} />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 20, paddingBottom: 120 }}>
 
@@ -225,7 +182,7 @@ export default function CheckoutScreen() {
             <Text style={[styles.payLabel, { color: colors.text }]}>{activeMethod.label}</Text>
             <Text style={[styles.paySub, { color: colors.textSecondary }]}>{activeMethod.sub}</Text>
           </View>
-          <ChevronIcon color={colors.textSecondary} />
+          <ChevronRightIcon color={colors.textSecondary} size={18} />
         </Pressable>
 
         {/* Total */}
@@ -266,14 +223,14 @@ export default function CheckoutScreen() {
                   <Text style={[styles.paySub, { color: colors.textSecondary }]}>{method.sub}</Text>
                 </View>
                 <View style={[styles.checkbox, { backgroundColor: isSelected ? TEAL : 'transparent', borderColor: isSelected ? TEAL : '#BDBDBD' }]}>
-                  {isSelected && <CheckIcon color="#fff" />}
+                  {isSelected && <CheckIcon color="#fff" size={12} />}
                 </View>
               </Pressable>
             );
           })}
 
           <Pressable style={[styles.methodRow, { backgroundColor: colors.background }]} onPress={() => { setShowPaymentSheet(false); router.push('/add-card'); }}>
-            <PlusIcon color={colors.textSecondary} />
+            <PlusCircleIcon color={colors.textSecondary} size={20} />
             <Text style={[styles.addPayText, { color: colors.text }]}>Add Payment Method</Text>
           </Pressable>
 
@@ -306,20 +263,6 @@ export default function CheckoutScreen() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1 },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingBottom: 14,
-  },
-  backBtn: {
-    width: 40, height: 40, borderRadius: 20,
-    alignItems: 'center', justifyContent: 'center',
-    shadowColor: '#000', shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1, shadowRadius: 6, elevation: 4,
-  },
-  title: { fontSize: 17, fontFamily: 'DMSans_700Bold' },
   sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
   sectionTitle: { fontSize: 16, fontFamily: 'DMSans_700Bold' },
   editLink: { fontSize: 13, fontFamily: 'DMSans_500Medium' },
