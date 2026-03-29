@@ -1,57 +1,80 @@
-import { View, Text, Image, Pressable, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, ImageBackground, Pressable, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useTheme } from '../../hooks/useTheme';
+import { LinearGradient } from 'expo-linear-gradient';
 
-const { width } = Dimensions.get('window');
 const CARD_HEIGHT = 110;
-const TEAL = '#4AB7B6';
 
 interface Category {
   id: string;
   name: string;
   count: string;
-  image: any;
-  imageOnRight: boolean;
+  image: string;
+  gradient: readonly [string, string];
 }
 
 const CATEGORIES: Category[] = [
-  { id: '1', name: 'New Arrivals', count: '208 Products', image: require('../../assets/chair.png'), imageOnRight: true },
-  { id: '2', name: 'Furniture', count: '358 Products', image: require('../../assets/chair.png'), imageOnRight: false },
-  { id: '3', name: 'Appliances', count: '160 Products', image: require('../../assets/washing-machine.png'), imageOnRight: true },
-  { id: '4', name: 'Electronics', count: '230 Products', image: require('../../assets/washing-machine.png'), imageOnRight: false },
-  { id: '5', name: 'Home & Living', count: '140 Products', image: require('../../assets/chair.png'), imageOnRight: true },
+  {
+    id: '1',
+    name: 'New Arrivals',
+    count: '208 Products',
+    image: 'https://loremflickr.com/700/220/shopping,new,arrivals?lock=10',
+    gradient: ['rgba(74,183,182,0.88)', 'transparent'],
+  },
+  {
+    id: '2',
+    name: 'Furniture',
+    count: '358 Products',
+    image: 'https://loremflickr.com/700/220/furniture,sofa,living?lock=11',
+    gradient: ['rgba(108,92,231,0.88)', 'transparent'],
+  },
+  {
+    id: '3',
+    name: 'Appliances',
+    count: '160 Products',
+    image: 'https://loremflickr.com/700/220/appliance,kitchen,home?lock=12',
+    gradient: ['rgba(253,121,168,0.88)', 'transparent'],
+  },
+  {
+    id: '4',
+    name: 'Electronics',
+    count: '230 Products',
+    image: 'https://loremflickr.com/700/220/electronics,technology,gadgets?lock=13',
+    gradient: ['rgba(0,184,148,0.88)', 'transparent'],
+  },
+  {
+    id: '5',
+    name: 'Home & Living',
+    count: '140 Products',
+    image: 'https://loremflickr.com/700/220/home,decor,interior?lock=14',
+    gradient: ['rgba(253,203,110,0.9)', 'transparent'],
+  },
 ];
 
 function CategoryCard({ item }: { item: Category }) {
-  const colors = useTheme();
   const router = useRouter();
 
-  const textSide = (
-    <View style={styles.textSide}>
-      <Text style={[styles.name, { color: colors.text }]}>{item.name}</Text>
-      <Text style={[styles.count, { color: colors.textSecondary }]}>{item.count}</Text>
-    </View>
-  );
-
-  const imageSide = (
-    <View style={[styles.imageSide, { backgroundColor: colors.skeleton }]}>
-      <Image source={item.image} style={styles.image} resizeMode="cover" />
-    </View>
-  );
-
   return (
-    <Pressable onPress={() => router.push(`/category/${encodeURIComponent(item.name)}`)} style={[styles.card, { backgroundColor: colors.card }]}>
-      {item.imageOnRight ? (
-        <>
-          {textSide}
-          {imageSide}
-        </>
-      ) : (
-        <>
-          {imageSide}
-          {textSide}
-        </>
-      )}
+    <Pressable
+      onPress={() => router.push(`/category/${encodeURIComponent(item.name)}`)}
+      style={styles.shadow}
+    >
+      <ImageBackground
+        source={{ uri: item.image }}
+        style={styles.card}
+        imageStyle={styles.cardImage}
+        resizeMode="cover"
+      >
+        <View style={styles.overlay} />
+        <LinearGradient
+          colors={item.gradient}
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 0.65, y: 0.5 }}
+          style={styles.gradient}
+        >
+          <Text style={styles.name}>{item.name}</Text>
+          <Text style={styles.count}>{item.count}</Text>
+        </LinearGradient>
+      </ImageBackground>
     </Pressable>
   );
 }
@@ -67,43 +90,32 @@ export function CategorySection() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 20,
-    gap: 12,
-    paddingBottom: 100,
+  container: { paddingHorizontal: 20, gap: 12, paddingBottom: 100 },
+  shadow: {
+    borderRadius: 14,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
   },
   card: {
     width: '100%',
     height: CARD_HEIGHT,
-    borderRadius: 12,
-    flexDirection: 'row',
+    borderRadius: 14,
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 3,
   },
-  textSide: {
+  cardImage: { borderRadius: 14 },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.12)',
+  },
+  gradient: {
     flex: 1,
+    paddingHorizontal: 22,
     justifyContent: 'center',
-    paddingHorizontal: 20,
+    width: '62%',
   },
-  name: {
-    fontSize: 16,
-    fontFamily: 'DMSans_700Bold',
-    marginBottom: 4,
-  },
-  count: {
-    fontSize: 13,
-    fontFamily: 'DMSans_400Regular',
-  },
-  imageSide: {
-    width: '45%',
-    height: '100%',
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-  },
+  name: { fontSize: 16, fontFamily: 'DMSans_700Bold', color: '#fff', marginBottom: 4 },
+  count: { fontSize: 13, fontFamily: 'DMSans_400Regular', color: 'rgba(255,255,255,0.88)' },
 });

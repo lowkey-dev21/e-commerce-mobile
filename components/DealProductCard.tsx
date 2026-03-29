@@ -64,7 +64,7 @@ export function DealProductCard({ product, onPress, onWishlist, onAddToCart }: D
       )}
 
       {/* Image */}
-      <Image source={product.image} style={[styles.image, { backgroundColor: colors.skeleton }]} resizeMode="contain" />
+      <Image source={product.image} style={[styles.image, { backgroundColor: colors.skeleton }]} resizeMode="cover" />
 
       {/* Info */}
       <View style={styles.info}>

@@ -28,7 +28,8 @@
       "Read(//home/lowkey/Desktop/DEV/RN_DEV/**)",
       "Bash(ip addr:*)",
       "Read(//run/host/monitor/**)",
-      "Bash(nmcli device:*)"
+      "Bash(nmcli device:*)",
+      "Bash(find /home/lowkey/Desktop/DEV/RN_DEV/e-commerce-mobile -name *product* -o -name *wish* -o -name *cart*)"
     ]
   }
 }

@@ -112,21 +112,37 @@ const reviewStyles = StyleSheet.create({
   },
 });
 
-// Mock product for local IDs (no API)
+const MOCK_DETAIL: Record<string, { name: string; price: number; category: string; rating: number; reviewCount: number; stock: number; image: string }> = {
+  '1':  { name: 'Luxury Wing Chair',    price: 3599,   category: 'Furniture',    rating: 4.8, reviewCount: 214, stock: 8,  image: 'https://cdn.dummyjson.com/products/images/furniture/Knoll%20Saarinen%20Executive%20Conference%20Chair/1.webp' },
+  '2':  { name: 'LG Washing Machine',   price: 45999,  category: 'Appliances',   rating: 4.6, reviewCount: 320, stock: 5,  image: 'https://loremflickr.com/600/600/washing,machine,appliance?lock=202' },
+  '3':  { name: 'Accent Armchair',      price: 2899,   category: 'Furniture',    rating: 4.5, reviewCount: 178, stock: 12, image: 'https://cdn.dummyjson.com/products/images/furniture/Annibale%20Colombo%20Sofa/1.webp' },
+  '4':  { name: 'Front Load Washer',    price: 38999,  category: 'Appliances',   rating: 4.7, reviewCount: 265, stock: 3,  image: 'https://loremflickr.com/600/600/laundry,front,loader?lock=204' },
+  '5':  { name: 'Classic Wingback',     price: 4299,   category: 'Furniture',    rating: 4.9, reviewCount: 302, stock: 6,  image: 'https://loremflickr.com/600/600/armchair,velvet,wingback?lock=205' },
+  '6':  { name: 'Samsung Washer 8kg',   price: 52000,  category: 'Appliances',   rating: 4.8, reviewCount: 189, stock: 4,  image: 'https://loremflickr.com/600/600/washing,machine?lock=206' },
+  '7':  { name: 'Sony 65" OLED TV',     price: 89999,  category: 'Electronics',  rating: 4.9, reviewCount: 412, stock: 7,  image: 'https://loremflickr.com/600/600/smart,tv,television?lock=207' },
+  '8':  { name: 'MacBook Pro M3',       price: 124999, category: 'Electronics',  rating: 4.8, reviewCount: 534, stock: 9,  image: 'https://cdn.dummyjson.com/products/images/laptops/Apple%20MacBook%20Pro%2014%20Inch%20Space%20Grey/1.webp' },
+  '9':  { name: 'Samsung Galaxy S25',   price: 74999,  category: 'Electronics',  rating: 4.7, reviewCount: 621, stock: 15, image: 'https://cdn.dummyjson.com/products/images/smartphones/Samsung%20Galaxy%20S23%20Ultra/1.webp' },
+  '10': { name: 'AirPods Pro 2',        price: 24999,  category: 'Electronics',  rating: 4.6, reviewCount: 847, stock: 20, image: 'https://loremflickr.com/600/600/airpods,earbuds,wireless?lock=210' },
+  '11': { name: 'Dyson V15 Vacuum',     price: 42999,  category: 'Appliances',   rating: 4.7, reviewCount: 293, stock: 6,  image: 'https://loremflickr.com/600/600/vacuum,dyson,cleaner?lock=211' },
+  '12': { name: 'Bosch Dishwasher',     price: 35999,  category: 'Appliances',   rating: 4.5, reviewCount: 157, stock: 4,  image: 'https://loremflickr.com/600/600/dishwasher,bosch?lock=212' },
+  '13': { name: 'L-Shape Sofa Set',     price: 28999,  category: 'Furniture',    rating: 4.8, reviewCount: 388, stock: 3,  image: 'https://cdn.dummyjson.com/products/images/furniture/Annibale%20Colombo%20Sofa/2.webp' },
+  '14': { name: 'King Size Bed Frame',  price: 18999,  category: 'Furniture',    rating: 4.6, reviewCount: 241, stock: 5,  image: 'https://cdn.dummyjson.com/products/images/furniture/Annibale%20Colombo%20Bed/1.webp' },
+  '15': { name: 'Coffee Table Oak',     price: 6499,   category: 'Furniture',    rating: 4.4, reviewCount: 132, stock: 11, image: 'https://cdn.dummyjson.com/products/images/furniture/Bedside%20Table%20African%20Cherry/1.webp' },
+  '16': { name: 'Floor Standing Lamp',  price: 3299,   category: 'Home & Living',rating: 4.5, reviewCount: 98,  stock: 14, image: 'https://loremflickr.com/600/600/floor,lamp,light?lock=216' },
+  '17': { name: 'Scented Candle Set',   price: 1299,   category: 'Home & Living',rating: 4.3, reviewCount: 74,  stock: 30, image: 'https://loremflickr.com/600/600/candle,scented,wax?lock=217' },
+  '18': { name: 'Ceramic Vase Set',     price: 2199,   category: 'Home & Living',rating: 4.4, reviewCount: 116, stock: 18, image: 'https://loremflickr.com/600/600/vase,ceramic,flower?lock=218' },
+  '19': { name: 'Wall Mirror Arch',     price: 5499,   category: 'Home & Living',rating: 4.7, reviewCount: 203, stock: 7,  image: 'https://loremflickr.com/600/600/mirror,wall,arch?lock=219' },
+  '20': { name: 'Kitchen Knife Set',    price: 4299,   category: 'Home & Living',rating: 4.6, reviewCount: 345, stock: 9,  image: 'https://loremflickr.com/600/600/knife,kitchen,chef?lock=220' },
+};
+
+const DESC = 'Premium quality product designed for comfort and durability. This item combines modern aesthetics with practical functionality, making it a perfect addition to your home. Built with high-grade materials to ensure long-lasting performance.';
+
 function getMockProduct(id: string): Product {
-  const isWasher = id === '2' || id === '4' || id === '6';
-  return {
-    _id: id,
-    name: isWasher ? 'LG Washing Machine 8kg' : 'Luxury Wing Chair',
-    description: 'Premium quality product designed for comfort and durability. This item combines modern aesthetics with practical functionality, making it a perfect addition to your home. Built with high-grade materials to ensure long-lasting performance.',
-    price: isWasher ? 45999 : 3599,
-    category: isWasher ? 'Appliances' : 'Furniture',
-    image: '',
-    stock: 12,
-    rating: isWasher ? 4.6 : 4.8,
-    reviewCount: isWasher ? 320 : 214,
-    createdAt: new Date().toISOString(),
-  };
+  const m = MOCK_DETAIL[id];
+  if (m) {
+    return { _id: id, name: m.name, description: DESC, price: m.price, category: m.category, image: m.image, stock: m.stock, rating: m.rating, reviewCount: m.reviewCount, createdAt: new Date().toISOString() };
+  }
+  return { _id: id, name: 'Product', description: DESC, price: 0, category: '', image: '', stock: 0, rating: 0, reviewCount: 0, createdAt: new Date().toISOString() };
 }
 
 export default function ProductDetailScreen() {
@@ -175,16 +191,12 @@ export default function ProductDetailScreen() {
 
   if (!product) return null;
 
-  const localImages: Record<string, any> = {
-    '1': require('../../assets/chair.png'),
-    '2': require('../../assets/washing-machine.png'),
-    '3': require('../../assets/chair.png'),
-    '4': require('../../assets/washing-machine.png'),
-    '5': require('../../assets/chair.png'),
-    '6': require('../../assets/washing-machine.png'),
-  };
-  const localImage = localImages[id!];
-  const imageSource = localImage ? localImage : (product.image ? { uri: product.image } : null);
+  const mockImageUri = MOCK_DETAIL[id!]?.image;
+  const imageSource = mockImageUri
+    ? { uri: mockImageUri }
+    : product.image
+    ? { uri: product.image }
+    : null;
 
   const shortDesc = product.description.length > 140
     ? product.description.slice(0, 140) + '...'
