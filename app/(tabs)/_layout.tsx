@@ -4,6 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { HomeIcon } from '../../components/icons/HomeIcon';
 import { CartIcon } from '../../components/icons/CartIcon';
 import { WishlistIcon } from '../../components/icons/WishlistIcon';
+import { SearchIcon } from '../../components/icons/SearchIcon';
 import { useCartStore } from '../../store/cartStore';
 import { useTheme } from '../../hooks/useTheme';
 import { OrdersIcon } from '../../components/icons/OrdersIcon';
@@ -94,7 +95,10 @@ export default function TabsLayout() {
       />
       <Tabs.Screen
         name="search"
-        options={{ href: null }}
+        options={{
+          title: 'Search',
+          tabBarIcon: ({ color }) => <SearchIcon color={color} size={24} />,
+        }}
       />
       <Tabs.Screen
         name="orders"

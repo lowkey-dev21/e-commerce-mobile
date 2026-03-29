@@ -64,7 +64,7 @@ export function AppHeader({
 
   return (
     <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
-      <View style={styles.searchBar}>
+      <View style={[styles.searchBar, { backgroundColor: '#fff' }]}>
         <SearchIcon color="#AFAFAF" size={18} />
         <TextInput
           ref={inputRef}

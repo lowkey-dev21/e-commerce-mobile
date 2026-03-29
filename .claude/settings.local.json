@@ -24,7 +24,11 @@
       "Bash(cp \"/Users/apple/Downloads/washing-machine.png\" /Users/apple/Desktop/DEV/RN_DEV/ecommerce/mobile/assets/washing-machine.png)",
       "Bash(grep:*)",
       "Bash(for f:*)",
-      "Bash(do echo:*)"
+      "Bash(do echo:*)",
+      "Read(//home/lowkey/Desktop/DEV/RN_DEV/**)",
+      "Bash(ip addr:*)",
+      "Read(//run/host/monitor/**)",
+      "Bash(nmcli device:*)"
     ]
   }
 }

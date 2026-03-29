@@ -1,6 +1,6 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import {
-  ScrollView, View, StyleSheet, ActivityIndicator, Text, Pressable,
+  ScrollView, View, StyleSheet, Text, Pressable,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../../hooks/useTheme';
@@ -10,8 +10,6 @@ import { CategorySection } from '../../components/home/CategorySection';
 import { SectionHeader } from '../../components/SectionHeader';
 import { AppHeader } from '../../components/AppHeader';
 import { DealProductCard, DealProduct } from '../../components/DealProductCard';
-import { ProductCard } from '../../components/ProductCard';
-import { productService, Product } from '../../services/api';
 
 const TEAL = '#4AB7B6';
 const TABS = ['Home', 'Category'] as const;
@@ -32,27 +30,19 @@ export default function HomeScreen() {
   const [activeTab, setActiveTab] = useState<TabType>('Home');
   const [searchVisible, setSearchVisible] = useState(false);
   const [query, setQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<Product[]>([]);
-  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchResults, setSearchResults] = useState<DealProduct[]>([]);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const doSearch = useCallback(async (text: string) => {
+  const filterProducts = (text: string) => {
     if (!text.trim()) { setSearchResults([]); return; }
-    setSearchLoading(true);
-    try {
-      const res = await productService.getAll({ search: text });
-      setSearchResults(res.data.data);
-    } catch {
-      setSearchResults([]);
-    } finally {
-      setSearchLoading(false);
-    }
-  }, []);
+    const q = text.toLowerCase();
+    setSearchResults(MOCK_ARRIVALS.filter((p) => p.name.toLowerCase().includes(q)));
+  };
 
   const handleQueryChange = (text: string) => {
     setQuery(text);
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => doSearch(text), 400);
+    debounceRef.current = setTimeout(() => filterProducts(text), 300);
   };
 
   const handleSearchClose = () => {
@@ -102,11 +92,7 @@ export default function HomeScreen() {
         {searchVisible ? (
           /* ── Search results ── */
           isSearching ? (
-            searchLoading ? (
-              <View style={styles.loader}>
-                <ActivityIndicator size="large" color={TEAL} />
-              </View>
-            ) : searchResults.length === 0 ? (
+            searchResults.length === 0 ? (
               <View style={styles.loader}>
                 <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
                   No results for "{query}"
@@ -115,7 +101,7 @@ export default function HomeScreen() {
             ) : (
               <View style={styles.grid}>
                 {searchResults.map((item) => (
-                  <ProductCard key={item._id} product={item} />
+                  <DealProductCard key={item.id} product={item} onPress={() => router.push(`/product/${item.id}`)} />
                 ))}
               </View>
             )
